@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.8.2026020401",
+		"json": 2
+	},
+	"project": {
+		"name": "7700E_Override_2026-2027_Code_Robot_1",
+		"description": "first robot of the 2026-2027 year of 7700E. I do not know if we will make a 2nd robot in the future, but i will just call this robot 1 just in case.",
+		"creationDate": "8/9/2026, 3:38:53 PM",
+		"platform": "V5",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "V5_20240802_15_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
