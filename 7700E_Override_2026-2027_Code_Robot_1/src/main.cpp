@@ -16,12 +16,12 @@ competition Competition;
 brain Brain;
 controller Controller;
 
-motor LeftMiddle = motor(PORT9, ratio6_1, false);
-motor RightMiddle = motor(PORT5, ratio6_1, true);
-motor RightFront = motor(PORT7, ratio18_1, true);
-motor LeftFront = motor(PORT8, ratio18_1, false);
-motor RightBack = motor(PORT10, ratio6_1, true);
-motor LeftBack = motor(PORT9, ratio6_1, false);
+motor LeftFront = motor(PORT8, ratio18_1, true);
+motor LeftMiddle = motor(PORT6, ratio6_1, true);
+motor LeftBack = motor(PORT4, ratio6_1, true);
+motor RightFront = motor(PORT7, ratio18_1, false);
+motor RightMiddle = motor(PORT5, ratio6_1, false);
+motor RightBack = motor(PORT9, ratio6_1, false); 
 
 // define your global instances of motors and other devices here
 
@@ -34,6 +34,25 @@ motor LeftBack = motor(PORT9, ratio6_1, false);
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+
+void drive(int lspeed, int rspeed, int wt){
+  LeftMiddle.spin(forward, lspeed, pct);
+  RightMiddle.spin(forward, rspeed, pct);
+  RightFront.spin(forward, rspeed, pct);
+  LeftFront.spin(forward, lspeed, pct);
+  RightBack.spin(forward, rspeed, pct);
+  LeftBack.spin(forward, lspeed, pct);
+  wait(wt, msec);
+}
+
+void driveBrake(){
+  LeftMiddle.stop(brake);
+  RightMiddle.stop(brake);
+  LeftFront.stop(brake);
+  RightFront.stop(brake);
+  LeftBack.stop(brake);
+  RightBack.stop(brake);
+}
 
 double YOFFSET = 20; //offset for the display
 //Writes a line for the diagnostics of a motor on the Brain
@@ -154,11 +173,15 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+	int lspeed = 0;
+	int rspeed = 0;
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
-
+	lspeed = Controller.Axis3.position(pct);
+	rspeed = Controller.Axis2.position(pct);
+	drive(lspeed, rspeed, 10);
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
