@@ -23,8 +23,12 @@ motor RightFront = motor(PORT7, ratio18_1, false);
 motor RightMiddle = motor(PORT5, ratio6_1, false);
 motor RightBack = motor(PORT9, ratio6_1, false); 
 
+motor ELift = motor(PORT2, ratio6_1, true);
+
+motor intake = motor(PORT10, ratio6_1, true);
 // define your global instances of motors and other devices here
 
+bool spinIn = true;
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -43,6 +47,37 @@ void drive(int lspeed, int rspeed, int wt){
   RightBack.spin(forward, rspeed, pct);
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
+}
+
+void intakeToggle(){
+	if(spinIn == true){
+		intake.spin(forward, 100, pct);
+		spinIn = false;
+	}else{
+		intake.spin(reverse, 100, pct);
+		spinIn = true;
+	}
+}
+
+void intakeStop(){
+	intake.stop(brake);
+	spinIn = true;
+}
+
+void IntakeIn(){
+	intake.spin(forward, 100, pct);
+}
+
+void IntakeOut(){
+	intake.spin(reverse, 100, pct);
+}
+
+void liftUP(){
+   ELift.spin(forward, 100, pct);
+}
+
+void liftDOWN(){
+   ELift.spin(forward, -100, pct);
 }
 
 void driveBrake(){
@@ -182,6 +217,20 @@ void usercontrol(void) {
 	lspeed = Controller.Axis3.position(pct);
 	rspeed = Controller.Axis2.position(pct);
 	drive(lspeed, rspeed, 10);
+
+	if (Controller.ButtonL1.pressing()){
+       liftUP();
+   }else if (Controller.ButtonL2.pressing()){
+       liftDOWN();
+   }else{
+       ELift.stop(hold);
+   }
+
+
+   Controller.ButtonR2.pressed(intakeStop);
+   Controller.ButtonR1.pressed(intakeToggle);
+
+
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
