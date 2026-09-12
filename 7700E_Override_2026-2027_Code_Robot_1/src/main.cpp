@@ -51,7 +51,7 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
 }
-
+//claw toggle
 void clawtoggle(){
 	Brain.Screen.printAt(10, 20, "Toggle");
 	claw.set(!claw.value());
