@@ -51,18 +51,9 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
 }
-//claw toggle
+
 void clawtoggle(){
-	Brain.Screen.printAt(10, 20, "Toggle");
 	claw.set(!claw.value());
-	/**clawOpen = !clawOpen;
-	if (clawOpen){
-		claw.set(true);
-		//clawOpen = false;
-	}else{
-		//claw.set(false);
-		claw.set(false);
-	}**/
 }
 
 void intakeToggle(){
@@ -226,21 +217,21 @@ void usercontrol(void) {
 	rspeed = Controller.Axis2.position(pct);
 	drive(lspeed, rspeed, 10);
 
-	if (Controller.ButtonL1.pressing()){
+	if (Controller.ButtonL2.pressing()){
        liftUP();
-   }else if (Controller.ButtonL2.pressing()){
+    }else if (Controller.ButtonL1.pressing()){
        liftDOWN();
-   }else{
+    }else{
        ELift.stop(hold);
-   }
+    }
 if (Controller.ButtonA.pressing()){
 	clawtoggle();
-	while(Controller.ButtonA.pressing()){wait(5,msec);}
+	while(Controller.ButtonA.pressing()){
+		wait(5,msec);
+	}
 }
    Controller.ButtonR2.pressed(intakeStop);
    Controller.ButtonR1.pressed(intakeToggle);
-
-   //Controller.ButtonA.pressed(clawtoggle);
 
 
     // ........................................................................
