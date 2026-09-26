@@ -230,8 +230,6 @@ if (Controller.ButtonA.pressing()){
 		wait(5,msec);
 	}
 }
-   Controller.ButtonR2.pressed(intakeStop);
-   Controller.ButtonR1.pressed(intakeToggle);
 
 
     // ........................................................................
