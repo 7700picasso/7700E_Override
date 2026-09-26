@@ -25,12 +25,9 @@ motor RightBack = motor(PORT9, ratio6_1, false);
 
 motor ELift = motor(PORT2, ratio6_1, true);
 
-motor intake = motor(PORT10, ratio6_1, true);
-
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 // define your global instances of motors and other devices here
 
-bool spinIn = true;
 bool clawOpen = false;
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -54,21 +51,6 @@ void drive(int lspeed, int rspeed, int wt){
 
 void clawtoggle(){
 	claw.set(!claw.value());
-}
-
-void intakeToggle(){
-	if(spinIn == true){
-		intake.spin(forward, 100, pct);
-		spinIn = false;
-	}else{
-		intake.spin(reverse, 100, pct);
-		spinIn = true;
-	}
-}
-
-void intakeStop(){
-	intake.stop(brake);
-	spinIn = true;
 }
 
 void liftUP(){
