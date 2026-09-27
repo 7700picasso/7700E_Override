@@ -28,7 +28,6 @@ motor ELift = motor(PORT2, ratio6_1, true);
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 // define your global instances of motors and other devices here
 
-bool spinIn = true;
 bool clawOpen = false;
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -49,9 +48,10 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
 }
-//claw toggle
+
 void clawtoggle(){
 	claw.set(!claw.value());
+<<<<<<< HEAD
 	/**clawOpen = !clawOpen;
 	if (clawOpen){
 		claw.set(true);
@@ -61,6 +61,10 @@ void clawtoggle(){
 		claw.set(false);
 	}**/
 }
+=======
+}
+
+>>>>>>> 6446bdfa6f68c8e3e55e9f6474af76759ea5665c
 void liftUP(){
    ELift.spin(forward, 100, pct);
 }
@@ -207,20 +211,19 @@ void usercontrol(void) {
 	rspeed = Controller.Axis2.position(pct);
 	drive(lspeed, rspeed, 10);
 
-	if (Controller.ButtonL1.pressing()){
+	if (Controller.ButtonL2.pressing()){
        liftUP();
-   }else if (Controller.ButtonL2.pressing()){
+    }else if (Controller.ButtonL1.pressing()){
        liftDOWN();
-   }else{
+    }else{
        ELift.stop(hold);
-   }
+    }
 if (Controller.ButtonA.pressing()){
 	clawtoggle();
-	while(Controller.ButtonA.pressing()){wait(5,msec);}
+	while(Controller.ButtonA.pressing()){
+		wait(5,msec);
+	}
 }
-
-   //Controller.ButtonA.pressed(clawtoggle);
-
 
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
