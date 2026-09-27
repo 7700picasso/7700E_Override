@@ -28,7 +28,6 @@ motor ELift = motor(PORT2, ratio6_1, true);
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 // define your global instances of motors and other devices here
 
-bool clawOpen = false;
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -41,6 +40,7 @@ bool clawOpen = false;
 
 void drive(int lspeed, int rspeed, int wt){
   LeftMiddle.spin(forward, lspeed, pct);
+  //make left motor spin forward at 100percent speed
   RightMiddle.spin(forward, rspeed, pct);
   RightFront.spin(forward, rspeed, pct);
   LeftFront.spin(forward, lspeed, pct);
@@ -59,8 +59,9 @@ void clawtoggle(){
 	}else{
 		//claw.set(false);
 		claw.set(false);
-	}**/
-	
+		 **/
+	}	
+
 void liftUP(){
    ELift.spin(forward, 100, pct);
 }
@@ -207,6 +208,7 @@ void usercontrol(void) {
 	rspeed = Controller.Axis2.position(pct);
 	drive(lspeed, rspeed, 10);
 
+	//press L2 to make lift go up
 	if (Controller.ButtonL2.pressing()){
        liftUP();
     }else if (Controller.ButtonL1.pressing()){
