@@ -25,8 +25,6 @@ motor RightBack = motor(PORT9, ratio6_1, false);
 
 motor ELift = motor(PORT2, ratio6_1, true);
 
-motor intake = motor(PORT10, ratio6_1, true);
-
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 // define your global instances of motors and other devices here
 
@@ -53,7 +51,6 @@ void drive(int lspeed, int rspeed, int wt){
 }
 //claw toggle
 void clawtoggle(){
-	Brain.Screen.printAt(10, 20, "Toggle");
 	claw.set(!claw.value());
 	/**clawOpen = !clawOpen;
 	if (clawOpen){
@@ -64,22 +61,6 @@ void clawtoggle(){
 		claw.set(false);
 	}**/
 }
-
-void intakeToggle(){
-	if(spinIn == true){
-		intake.spin(forward, 100, pct);
-		spinIn = false;
-	}else{
-		intake.spin(reverse, 100, pct);
-		spinIn = true;
-	}
-}
-
-void intakeStop(){
-	intake.stop(brake);
-	spinIn = true;
-}
-
 void liftUP(){
    ELift.spin(forward, 100, pct);
 }
@@ -237,8 +218,6 @@ if (Controller.ButtonA.pressing()){
 	clawtoggle();
 	while(Controller.ButtonA.pressing()){wait(5,msec);}
 }
-   Controller.ButtonR2.pressed(intakeStop);
-   Controller.ButtonR1.pressed(intakeToggle);
 
    //Controller.ButtonA.pressed(clawtoggle);
 
