@@ -51,7 +51,7 @@ void drive(int lspeed, int rspeed, int wt){
 
 void clawtoggle(){
 	claw.set(!claw.value());
-<<<<<<< HEAD
+
 	/**clawOpen = !clawOpen;
 	if (clawOpen){
 		claw.set(true);
@@ -60,11 +60,7 @@ void clawtoggle(){
 		//claw.set(false);
 		claw.set(false);
 	}**/
-}
-=======
-}
-
->>>>>>> 6446bdfa6f68c8e3e55e9f6474af76759ea5665c
+	
 void liftUP(){
    ELift.spin(forward, 100, pct);
 }
