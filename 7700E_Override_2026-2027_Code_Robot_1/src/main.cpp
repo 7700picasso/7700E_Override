@@ -42,6 +42,7 @@ digital_out PIntake = digital_out(Brain.ThreeWirePort.B);
 
 void drive(int lspeed, int rspeed, int wt){
   LeftMiddle.spin(forward, lspeed, pct);
+  //make left motor spin forward at 100percent speed
   RightMiddle.spin(forward, rspeed, pct);
   RightFront.spin(forward, rspeed, pct);
   LeftFront.spin(forward, lspeed, pct);
