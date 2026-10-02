@@ -4,7 +4,7 @@
 /*    Author:       Student                                                   */
 /*    Created:      8/9/2026, 3:38:53 PM                                      */
 /*    Description:  V5 project                                                */
-/*                                                                            */
+/*    he took a bite of a boneless wing                                       */
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
@@ -16,14 +16,19 @@ competition Competition;
 brain Brain;
 controller Controller;
 
-motor LeftFront = motor(PORT8, ratio18_1, true);
+motor LeftFront = motor(PORT11, ratio18_1, true);
 motor LeftMiddle = motor(PORT6, ratio6_1, true);
 motor LeftBack = motor(PORT4, ratio6_1, true);
 motor RightFront = motor(PORT7, ratio18_1, false);
 motor RightMiddle = motor(PORT5, ratio6_1, false);
 motor RightBack = motor(PORT9, ratio6_1, false); 
+motor ELift1 = motor(PORT20, ratio6_1, true);
+motor ELift2 = motor(PORT8, ratio6_1, true);
+motor intake = motor(PORT3, ratio6_1, true);
 
 motor ELift = motor(PORT2, ratio6_1, true);
+
+motor intake = motor(PORT10, ratio6_1, false);
 
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 // define your global instances of motors and other devices here
@@ -43,6 +48,7 @@ double pi = 3.14;
 
 void drive(int lspeed, int rspeed, int wt){
   LeftMiddle.spin(forward, lspeed, pct);
+  //make left motor spin forward at 100percent speed
   RightMiddle.spin(forward, rspeed, pct);
   RightFront.spin(forward, rspeed, pct);
   LeftFront.spin(forward, lspeed, pct);
@@ -50,17 +56,55 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
 }
-
+//claw toggle
 void clawtoggle(){
+	Brain.Screen.printAt(10, 20, "Toggle");
 	claw.set(!claw.value());
+	/**clawOpen = !clawOpen;
+	if (clawOpen){
+		claw.set(true);
+		//clawOpen = false;
+	}else{
+		//claw.set(false);
+		claw.set(false);
+	}**/
+}
+
+void intakeToggle(){
+	if(spinIn == true){
+		intake.spin(forward, 60, pct);
+		spinIn = false;
+	}else{
+		intake.spin(reverse, 60, pct);
+		spinIn = true;
+	}
+}
+
+void intakeStop(){
+	intake.stop(brake);
+	spinIn = true;
 }
 
 void liftUP(){
-   ELift.spin(forward, 60, pct);
+	ELift1.spin(forward, 100, pct);
+	ELift2.spin(reverse, 100, pct);
 }
 
 void liftDOWN(){
-   ELift.spin(forward, -60, pct);
+	ELift1.spin(forward, -100, pct);
+	ELift2.spin(reverse, -100, pct);
+}
+
+void IntakeSpin(){
+	intake.spin(forward, 100, pct);
+}
+
+void IntakeSpinBackwards(){
+	intake.spin(forward, -100, pct); //Just in case 
+}
+                                                                  
+void IntakeDown(){
+	PIntake.set(!PIntake.value());
 }
 
 void driveBrake(){
@@ -72,12 +116,16 @@ void driveBrake(){
   RightBack.stop(brake);
 }
 
+void clamp(){
+	Claw.set(!Claw.value());
+}
+
 double YOFFSET = 20; //offset for the display
 //Writes a line for the diagnostics of a motor on the Brain
 void MotorDisplay(double y, double curr, double temp)
 {
 	Brain.Screen.setFillColor(transparent);
-	Brain.Screen.printAt(5, YOFFSET + y, "Current: %.1fA", curr);
+	Brain.Screen.printAt(5, YOFFSET + y, "Current: %.1fA", curr); 
 	
 	if (curr < 1){
 		Brain.Screen.setFillColor(green);
@@ -90,7 +138,7 @@ void MotorDisplay(double y, double curr, double temp)
 
 	
 	Brain.Screen.setFillColor(transparent);
-	Brain.Screen.printAt(160, YOFFSET + y, "Temp: %.1fC", temp);
+	Brain.Screen.printAt(160, YOFFSET + y, "Temp: %.1fC", temp);  
 	
 	if (temp < 45){
 		Brain.Screen.setFillColor(green);
@@ -118,10 +166,10 @@ void Display()
 	double rightFrontTemp = RightFront.temperature(celsius);
 	double rightBackCurr = RightBack.current(amp);
 	double rightBackTemp = RightBack.temperature(celsius);
-  double rightMiddleCurr = RightMiddle.temperature(celsius);
-  double rightMiddleTemp = RightMiddle.current(amp);
-  double leftMiddleCurr = LeftMiddle.temperature(celsius);
-  double leftMiddleTemp = LeftMiddle.current(amp);
+  	double rightMiddleCurr = RightMiddle.temperature(celsius);
+  	double rightMiddleTemp = RightMiddle.current(amp);
+  	double leftMiddleCurr = LeftMiddle.temperature(celsius);
+  	double leftMiddleTemp = LeftMiddle.current(amp);
 
 
 	if (LeftFront.installed()){
@@ -155,6 +203,19 @@ void Display()
 		Brain.Screen.printAt(5, YOFFSET + 91, "RightBack Problem");
 	}
 
+	if (LeftMiddle.installed()) {
+		MotorDisplay(121, leftMiddleCurr, leftMiddleTemp);
+		Brain.Screen.printAt(300, YOFFSET + 121, "LeftMiddle");
+	} else {
+		Brain.Screen.printAt(5, YOFFSET + 121, "LeftMiddle Problem");
+	}
+
+	if (RightMiddle.installed()) {
+		MotorDisplay(151, rightMiddleCurr, rightMiddleTemp);
+		Brain.Screen.printAt(300, YOFFSET + 151, "RightMiddle");
+	} else {
+		Brain.Screen.printAt(5, YOFFSET + 151, "RightMiddle Problem");
+	}
 }
 
 void pre_auton(void) {
@@ -201,21 +262,26 @@ void usercontrol(void) {
 	rspeed = Controller.Axis2.position(pct);
 	drive(lspeed, rspeed, 10);
 
-	if (Controller.ButtonR2.pressing()){
-       liftUP();
-    }else if (Controller.ButtonR1.pressing()){
-       liftDOWN();
-    }else{
-       ELift.stop(hold);
-    }
-if (Controller.ButtonA.pressing()){
-	clawtoggle();
-	while(Controller.ButtonA.pressing()){
-		wait(5,msec);
+	Controller.ButtonA.pressed(clamp);
+	Controller.ButtonB.pressed(IntakeDown);
+	if (Controller.ButtonL1.pressing()){
+		liftUP();
+	}else if (Controller.ButtonL2.pressing()){
+		liftDOWN();
+	}else{
+		ELift1.stop(brake);
+		ELift2.stop(brake);
 	}
-}
 
-
+	if (Controller.ButtonR1.pressing()){
+		IntakeSpin();
+	}else if (Controller.ButtonL2.pressing()){
+		IntakeSpinBackwards();
+	}else{
+		intake.stop(brake);
+	}
+	
+	
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
