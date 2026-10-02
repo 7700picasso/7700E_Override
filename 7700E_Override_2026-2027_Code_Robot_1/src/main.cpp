@@ -29,6 +29,8 @@ digital_out claw = digital_out(Brain.ThreeWirePort.A);
 // define your global instances of motors and other devices here
 
 bool clawOpen = false;
+double pi = 3.14;
+
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -54,11 +56,11 @@ void clawtoggle(){
 }
 
 void liftUP(){
-   ELift.spin(forward, 100, pct);
+   ELift.spin(forward, 60, pct);
 }
 
 void liftDOWN(){
-   ELift.spin(forward, -100, pct);
+   ELift.spin(forward, -60, pct);
 }
 
 void driveBrake(){
@@ -199,9 +201,9 @@ void usercontrol(void) {
 	rspeed = Controller.Axis2.position(pct);
 	drive(lspeed, rspeed, 10);
 
-	if (Controller.ButtonL2.pressing()){
+	if (Controller.ButtonR2.pressing()){
        liftUP();
-    }else if (Controller.ButtonL1.pressing()){
+    }else if (Controller.ButtonR1.pressing()){
        liftDOWN();
     }else{
        ELift.stop(hold);
