@@ -26,8 +26,16 @@ motor ELift1 = motor(PORT20, ratio6_1, true);
 motor ELift2 = motor(PORT8, ratio6_1, true);
 motor intake = motor(PORT3, ratio6_1, true);
 
+<<<<<<< Updated upstream
 digital_out Claw = digital_out(Brain.ThreeWirePort.A);
 digital_out PIntake = digital_out(Brain.ThreeWirePort.B);
+=======
+motor ELift = motor(PORT2, ratio6_1, true);
+
+motor intake = motor(PORT10, ratio6_1, false);
+
+digital_out claw = digital_out(Brain.ThreeWirePort.A);
+>>>>>>> Stashed changes
 // define your global instances of motors and other devices here
 
 /*---------------------------------------------------------------------------*/
@@ -50,6 +58,37 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
 }
+<<<<<<< Updated upstream
+=======
+//claw toggle
+void clawtoggle(){
+	Brain.Screen.printAt(10, 20, "Toggle");
+	claw.set(!claw.value());
+	/**clawOpen = !clawOpen;
+	if (clawOpen){
+		claw.set(true);
+		//clawOpen = false;
+	}else{
+		//claw.set(false);
+		claw.set(false);
+	}**/
+}
+
+void intakeToggle(){
+	if(spinIn == true){
+		intake.spin(forward, 60, pct);
+		spinIn = false;
+	}else{
+		intake.spin(reverse, 60, pct);
+		spinIn = true;
+	}
+}
+
+void intakeStop(){
+	intake.stop(brake);
+	spinIn = true;
+}
+>>>>>>> Stashed changes
 
 void liftUP(){
 	ELift1.spin(forward, 100, pct);
