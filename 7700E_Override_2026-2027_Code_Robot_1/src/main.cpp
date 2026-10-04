@@ -24,17 +24,19 @@ motor RightMiddle = motor(PORT5, ratio6_1, false);
 motor RightBack = motor(PORT9, ratio6_1, false); 
 motor ELift1 = motor(PORT20, ratio6_1, true);
 motor ELift2 = motor(PORT8, ratio6_1, true);
-motor intake = motor(PORT3, ratio6_1, true);
-
-motor ELift = motor(PORT2, ratio6_1, true);
-
-motor intake = motor(PORT10, ratio6_1, false);
 
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
+
+inertial gyroturn = inertial(PORT10);
 // define your global instances of motors and other devices here
 
 bool clawOpen = false;
 double pi = 3.14;
+double d = 3.25;
+double g = 0.6;
+int AutonSelected = 0;
+int AutonMin = 0;
+int AutonMax = 2;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -56,34 +58,6 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, lspeed, pct);
   wait(wt, msec);
 }
-//claw toggle
-void clawtoggle(){
-	Brain.Screen.printAt(10, 20, "Toggle");
-	claw.set(!claw.value());
-	/**clawOpen = !clawOpen;
-	if (clawOpen){
-		claw.set(true);
-		//clawOpen = false;
-	}else{
-		//claw.set(false);
-		claw.set(false);
-	}**/
-}
-
-void intakeToggle(){
-	if(spinIn == true){
-		intake.spin(forward, 60, pct);
-		spinIn = false;
-	}else{
-		intake.spin(reverse, 60, pct);
-		spinIn = true;
-	}
-}
-
-void intakeStop(){
-	intake.stop(brake);
-	spinIn = true;
-}
 
 void liftUP(){
 	ELift1.spin(forward, 100, pct);
@@ -95,17 +69,6 @@ void liftDOWN(){
 	ELift2.spin(reverse, -100, pct);
 }
 
-void IntakeSpin(){
-	intake.spin(forward, 100, pct);
-}
-
-void IntakeSpinBackwards(){
-	intake.spin(forward, -100, pct); //Just in case 
-}
-                                                                  
-void IntakeDown(){
-	PIntake.set(!PIntake.value());
-}
 
 void driveBrake(){
   LeftMiddle.stop(brake);
@@ -117,7 +80,7 @@ void driveBrake(){
 }
 
 void clamp(){
-	Claw.set(!Claw.value());
+	claw.set(!claw.value());
 }
 
 double YOFFSET = 20; //offset for the display
@@ -179,7 +142,6 @@ void Display()
 		Brain.Screen.printAt(5, YOFFSET + 1, "LeftFront Problem");
 	}
 	
-	
 	if (LeftBack.installed()){
 		MotorDisplay(31, leftBackCurr, leftBackTemp);
 		Brain.Screen.printAt(300, YOFFSET + 31, "LeftBack");
@@ -187,14 +149,12 @@ void Display()
 		Brain.Screen.printAt(5, YOFFSET + 31, "LeftBack Problem");
 	}
 
-
 	if (RightFront.installed()) {
 		MotorDisplay(61, rightFrontCurr, rightFrontTemp);
 		Brain.Screen.printAt(300, YOFFSET + 61, "RightFront");
 	} else {
 		Brain.Screen.printAt(5, YOFFSET + 61, "RightFront Problem");
 	}
-	
 	
 	if (RightBack.installed()) {
 		MotorDisplay(91, rightBackCurr, rightBackTemp);
@@ -218,10 +178,105 @@ void Display()
 	}
 }
 
-void pre_auton(void) {
+void selectAuton() {
+		bool selectingAuton = true;
+		
+		int x = Brain.Screen.xPosition(); // get the x position of last touch of the screen
+		int y = Brain.Screen.yPosition(); // get the y position of last touch of the screen
+		
+		// check to see if buttons were pressed
+		if (x >= 20 && x <= 120 && y >= 50 && y <= 150){ // select button pressed
+				AutonSelected++;
+				if (AutonSelected > AutonMax){
+						AutonSelected = AutonMin; // rollover
+				}
+				Brain.Screen.printAt(1, 200, "Auton Selected =  %d   ", AutonSelected);
+		}
+		
+		
+		if (x >= 170 && x <= 270 && y >= 50 && y <= 150) {
+				selectingAuton = false; // GO button pressed
+				Brain.Screen.printAt(1, 200, "Auton  =  %d   GO           ", AutonSelected);
+		}
+		
+		if (!selectingAuton) {
+				Brain.Screen.setFillColor(green);
+				Brain.Screen.drawCircle(300, 75, 25);
+		} else {
+				Brain.Screen.setFillColor(red);
+				Brain.Screen.drawCircle(300, 75, 25);
+		}
+		
+		wait(10, msec); // slow it down
+		Brain.Screen.setFillColor(black);
+		
+}
 
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+void drawGUI() {
+	// Draws 2 buttons to be used for selecting auto
+	Brain.Screen.clearScreen();
+	Brain.Screen.printAt(1, 40, "Select Auton then Press Go");
+	Brain.Screen.printAt(1, 200, "Auton Selected =  %d   ", AutonSelected);
+
+	//Draw SELECT button
+	Brain.Screen.setFillColor(red);
+	Brain.Screen.drawRectangle(20, 50, 100, 100);
+	Brain.Screen.drawCircle(300, 75, 25);
+	Brain.Screen.printAt(25, 75, "Select");
+
+	//Draw GO button
+	Brain.Screen.setFillColor(green);
+	Brain.Screen.drawRectangle(170, 50, 100, 100);
+	Brain.Screen.printAt(175, 75, "GO");
+	Brain.Screen.setFillColor(black);
+}
+
+
+//inch drive
+void inchDrive(double target){
+	double position = 0;
+	double error = target - position;
+	double kP = 1.5;
+	double speed = kP * error;
+	double accuracy = 2;
+	LeftFront.setPosition(0.0, rev);
+
+	while(fabs(error) >= accuracy){
+		drive(speed, speed, 10);
+		position = LeftFront.position(rev);
+		error = target - position;
+		speed = kP * error;
+	}
+	driveBrake();
+}
+
+
+//gyro turning
+
+void turn(double target){
+	double rotation = 0;
+	double error = target - rotation;
+	double kP = 1.5;
+	double speed = kP * error;
+	double accuracy = 2;
+	gyroturn.setRotation(0.0, deg);
+
+	while(fabs(error) >= accuracy){
+		drive(speed, -speed, 10);
+		rotation = gyroturn.rotation(deg);
+		error = target - rotation;
+		speed = kP * error;
+	}
+	driveBrake();
+	
+}
+
+
+void pre_auton(void) {
+  	// Initializing Robot Configuration. DO NOT REMOVE!
+	Brain.Screen.printAt(1, 40, "pre auton is running");
+	drawGUI();
+	Brain.Screen.pressed(selectAuton);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -235,9 +290,28 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+
+	//switch case
+	switch (AutonSelected) {
+		case 0:
+			//code 0: 15sec LEFT SIDE
+			Brain.Screen.printAt(1, 220, "auton 0 is running");
+			inchDrive(24);
+			
+			break;
+		
+		case 1:
+			//code 1: 15sec RIGHT SIDE
+			Brain.Screen.printAt(1, 220, "auton 1 is running");
+			turn(90);
+			break;
+		
+		case 2:
+			//code 2: 1 min AUTON SKILLS
+			Brain.Screen.printAt(1, 220, "auton 2 is running");
+			break;
+		}
+		Brain.Screen.printAt(10, 220, "COMPLETE");
 }
 
 /*---------------------------------------------------------------------------*/
@@ -255,6 +329,7 @@ void usercontrol(void) {
 	int lspeed = 0;
 	int rspeed = 0;
   while (1) {
+	  Display();
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
@@ -263,22 +338,14 @@ void usercontrol(void) {
 	drive(lspeed, rspeed, 10);
 
 	Controller.ButtonA.pressed(clamp);
-	Controller.ButtonB.pressed(IntakeDown);
-	if (Controller.ButtonL1.pressing()){
+
+	if (Controller.ButtonR2.pressing()){
 		liftUP();
-	}else if (Controller.ButtonL2.pressing()){
+	}else if (Controller.ButtonR1.pressing()){
 		liftDOWN();
 	}else{
 		ELift1.stop(brake);
 		ELift2.stop(brake);
-	}
-
-	if (Controller.ButtonR1.pressing()){
-		IntakeSpin();
-	}else if (Controller.ButtonL2.pressing()){
-		IntakeSpinBackwards();
-	}else{
-		intake.stop(brake);
 	}
 	
 	
@@ -299,7 +366,6 @@ int main() {
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
-  Display();
   // Run the pre-autonomous function.
   pre_auton();
 
