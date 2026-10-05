@@ -22,15 +22,14 @@ motor LeftBack = motor(PORT4, ratio6_1, true);
 motor RightFront = motor(PORT7, ratio18_1, false);
 motor RightMiddle = motor(PORT5, ratio6_1, false);
 motor RightBack = motor(PORT9, ratio6_1, false); 
-motor ELift1 = motor(PORT20, ratio6_1, true);
-motor ELift2 = motor(PORT8, ratio6_1, true);
+motor DR4B1 = motor(PORT20, ratio6_1, true);
+motor DR4B2 = motor(PORT8, ratio6_1, true);
 
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 
 inertial gyroturn = inertial(PORT10);
 // define your global instances of motors and other devices here
 
-bool clawOpen = false;
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
@@ -60,13 +59,13 @@ void drive(int lspeed, int rspeed, int wt){
 }
 
 void liftUP(){
-	ELift1.spin(forward, 100, pct);
-	ELift2.spin(reverse, 100, pct);
+	DR4B1.spin(forward, 100, pct);
+	DR4B2.spin(reverse, 100, pct);
 }
 
 void liftDOWN(){
-	ELift1.spin(forward, -100, pct);
-	ELift2.spin(reverse, -100, pct);
+	DR4B1.spin(forward, -100, pct);
+	DR4B2.spin(reverse, -100, pct);
 }
 
 
@@ -296,14 +295,23 @@ void autonomous(void) {
 		case 0:
 			//code 0: 15sec LEFT SIDE
 			Brain.Screen.printAt(1, 220, "auton 0 is running");
-			inchDrive(24);
-			
+			clamp();
+			liftUP();
+			inchDrive(14);
+			turn(-90);
+			inchDrive(4);
+			liftDOWN();
 			break;
 		
 		case 1:
 			//code 1: 15sec RIGHT SIDE
 			Brain.Screen.printAt(1, 220, "auton 1 is running");
+			clamp();
+			liftUP();
+			inchDrive(14);
 			turn(90);
+			inchDrive(4);
+			liftDOWN();
 			break;
 		
 		case 2:
@@ -344,8 +352,8 @@ void usercontrol(void) {
 	}else if (Controller.ButtonR1.pressing()){
 		liftDOWN();
 	}else{
-		ELift1.stop(brake);
-		ELift2.stop(brake);
+		DR4B1.stop(brake);
+		DR4B2.stop(brake);
 	}
 	
 	
