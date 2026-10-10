@@ -49,7 +49,6 @@ int AutonMax = 2;
 
 void drive(int lspeed, int rspeed, int wt){
   LeftMiddle.spin(forward, lspeed, pct);
-  //make left motor spin forward at 100percent speed
   RightMiddle.spin(forward, rspeed, pct);
   RightFront.spin(forward, rspeed, pct);
   LeftFront.spin(forward, lspeed, pct);
@@ -97,7 +96,7 @@ void MotorDisplay(double y, double curr, double temp)
 		Brain.Screen.setFillColor(red);
 		Brain.Screen.drawRectangle(140, YOFFSET + y - 15, 15, 15);
 	}
-
+																								   
 	
 	Brain.Screen.setFillColor(transparent);
 	Brain.Screen.printAt(160, YOFFSET + y, "Temp: %.1fC", temp);  
@@ -189,7 +188,16 @@ void selectAuton() {
 				if (AutonSelected > AutonMax){
 						AutonSelected = AutonMin; // rollover
 				}
-				Brain.Screen.printAt(1, 200, "Auton Selected =  %d   ", AutonSelected);
+				if(AutonSelected == 0){
+					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   Left Side", AutonSelected);
+				}
+				if(AutonSelected == 1){
+					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   Right Side", AutonSelected);
+				}
+				if(AutonSelected == 2){
+					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   1 min auton", AutonSelected);
+				}																																													   
+				
 		}
 		
 		
@@ -200,7 +208,8 @@ void selectAuton() {
 		
 		if (!selectingAuton) {
 				Brain.Screen.setFillColor(green);
-				Brain.Screen.drawCircle(300, 75, 25);
+				Brain.Screen.drawCircle(300, 75, 75);
+				Brain.Screen.printAt(300, 75, "Ready");
 		} else {
 				Brain.Screen.setFillColor(red);
 				Brain.Screen.drawCircle(300, 75, 25);
@@ -288,7 +297,7 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) {
+void autonomous(void) {																																																																					   
 
 	//switch case
 	switch (AutonSelected) {
