@@ -35,7 +35,7 @@ double d = 3.25;
 double g = 0.6;
 int AutonSelected = 0;
 int AutonMin = 0;
-int AutonMax = 2;
+int AutonMax = 3;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -79,6 +79,11 @@ void driveBrake(){
 
 void clamp(){
 	claw.set(!claw.value());
+}
+
+void liftBreak(){
+	DR4B1.stop(brake);
+	DR4B2.stop(brake);
 }
 
 double YOFFSET = 20; //offset for the display
@@ -306,31 +311,102 @@ void autonomous(void) {
 			Brain.Screen.printAt(1, 220, "auton 0 is running");
 			clamp();
 			liftUP();
+			wait(1000, msec);
+			liftBreak();
 			inchDrive(14);
+			driveBrake();
 			turn(-90);
+			driveBrake();
 			inchDrive(4);
+			driveBrake();
 			liftDOWN();
+			wait(1000, msec);
+			liftBreak();
+			clamp();
+			//Optional
+			inchDrive(-4);
+			driveBrake();
+			turn(-45);
+			driveBrake();
+			inchDrive(5);
+			driveBrake();
+			clamp();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			inchDrive(-5);
+			driveBrake();
+			turn(45);
+			driveBrake();
+			inchDrive(4);
+			driveBrake();
+			liftDOWN();
+			wait(500, msec);
+			liftBreak();
+			clamp();
+
 			break;
 		
 		case 1:
 			//code 1: 15sec RIGHT SIDE
-			Brain.Screen.printAt(1, 220, "auton 1 is running");
 			clamp();
 			liftUP();
+			wait(1000, msec);
+			liftBreak();
 			inchDrive(14);
+			driveBrake();
 			turn(90);
+			driveBrake();
 			inchDrive(4);
+			driveBrake();
 			liftDOWN();
+			wait(1000, msec);
+			liftBreak();
+			clamp();
+			//Optional
+			inchDrive(-4);
+			driveBrake();
+			turn(45);
+			driveBrake();
+			inchDrive(5);
+			driveBrake();
+			clamp();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			inchDrive(-5);
+			driveBrake();
+			turn(-45);
+			driveBrake();
+			inchDrive(4);
+			driveBrake();
+			liftDOWN();
+			wait(500, msec);
+			liftBreak();
+			clamp();
+			break;
+
+		case 2: 
+			//code 2: Both side auton
+			Brain.Screen.printAt(1, 220, "auton 2 is running");
+			liftUP();
+			wait(1000, msec);
+			liftBreak();
+			inchDrive(5);
+			liftDOWN();
+			wait(1000, msec);
+			liftBreak();
+			clamp();
 			break;
 		
-		case 2:
-			//code 2: 1 min AUTON SKILLS
-			Brain.Screen.printAt(1, 220, "auton 2 is running");
+		case 3:
+			//code 3: 1 min AUTON SKILLS
+			Brain.Screen.printAt(1, 220, "auton 3 is running");
 			break;
 		}
 		Brain.Screen.printAt(10, 220, "COMPLETE");
 }
-
+																																																																																																			   
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
