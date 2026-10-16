@@ -16,18 +16,18 @@ competition Competition;
 brain Brain;
 controller Controller;
 
-motor LeftFront = motor(PORT11, ratio18_1, true);
-motor LeftMiddle = motor(PORT6, ratio6_1, true);
-motor LeftBack = motor(PORT4, ratio6_1, true);
-motor RightFront = motor(PORT7, ratio18_1, false);
-motor RightMiddle = motor(PORT5, ratio6_1, false);
-motor RightBack = motor(PORT9, ratio6_1, false); 
-motor DR4B1 = motor(PORT20, ratio6_1, true);
-motor DR4B2 = motor(PORT8, ratio6_1, true);
+motor LeftFront = motor(PORT6, ratio18_1, true);
+motor LeftMiddle = motor(PORT4, ratio6_1, true);
+motor LeftBack = motor(PORT5, ratio6_1, true);
+motor RightFront = motor(PORT9, ratio18_1, false);
+motor RightMiddle = motor(PORT7, ratio6_1, false);
+motor RightBack = motor(PORT8, ratio6_1, false); 
+motor DR4BR = motor(PORT20, ratio6_1, true);
+motor DR4BL = motor(PORT1, ratio6_1, true);
 
 digital_out claw = digital_out(Brain.ThreeWirePort.A);
 
-inertial gyroturn = inertial(PORT10);
+inertial gyroturn = inertial(PORT21);
 // define your global instances of motors and other devices here
 
 double pi = 3.14;
@@ -58,13 +58,13 @@ void drive(int lspeed, int rspeed, int wt){
 }
 
 void liftUP(){
-	DR4B1.spin(forward, 100, pct);
-	DR4B2.spin(reverse, 100, pct);
+	DR4BR.spin(forward, 100, pct);
+	DR4BL.spin(reverse, 100, pct);
 }
 
 void liftDOWN(){
-	DR4B1.spin(forward, -100, pct);
-	DR4B2.spin(reverse, -100, pct);
+	DR4BR.spin(forward, -100, pct);
+	DR4BL.spin(reverse, -100, pct);
 }
 
 
@@ -82,8 +82,8 @@ void clamp(){
 }
 
 void liftBreak(){
-	DR4B1.stop(brake);
-	DR4B2.stop(brake);
+	DR4BR.stop(brake);
+	DR4BL.stop(brake);
 }
 
 double YOFFSET = 20; //offset for the display
@@ -437,8 +437,8 @@ void usercontrol(void) {
 	}else if (Controller.ButtonR1.pressing()){
 		liftDOWN();
 	}else{
-		DR4B1.stop(brake);
-		DR4B2.stop(brake);
+		DR4BR.stop(brake);
+		DR4BL.stop(brake);
 	}
 	
 	
