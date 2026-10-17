@@ -58,13 +58,13 @@ void drive(int lspeed, int rspeed, int wt){
 }
 
 void liftUP(){
-	DR4BR.spin(forward, 100, pct);
-	DR4BL.spin(reverse, 100, pct);
+	DR4BR.spin(forward, 40, pct);
+	DR4BL.spin(reverse, 40, pct);
 }
 
 void liftDOWN(){
-	DR4BR.spin(forward, -100, pct);
-	DR4BL.spin(reverse, -100, pct);
+	DR4BR.spin(forward, -40, pct);
+	DR4BL.spin(reverse, -40, pct);
 }
 
 
@@ -310,6 +310,10 @@ void autonomous(void) {
 			//code 0: 15sec LEFT SIDE
 			Brain.Screen.printAt(1, 220, "auton 0 is running");
 			clamp();
+			drive(-100, -100, 100);
+			driveBrake();
+			drive(100, 100, 100);
+			driveBrake();
 			liftUP();
 			wait(1000, msec);
 			liftBreak();
@@ -324,32 +328,36 @@ void autonomous(void) {
 			liftBreak();
 			clamp();
 			//Optional
-			inchDrive(-4);
-			driveBrake();
-			turn(-45);
-			driveBrake();
-			inchDrive(5);
-			driveBrake();
-			clamp();
-			liftUP();
-			wait(500, msec);
-			liftBreak();
-			inchDrive(-5);
-			driveBrake();
-			turn(45);
-			driveBrake();
-			inchDrive(4);
-			driveBrake();
-			liftDOWN();
-			wait(500, msec);
-			liftBreak();
-			clamp();
+			// inchDrive(-4);
+			// driveBrake();
+			// turn(-45);
+			// driveBrake();
+			// inchDrive(5);
+			// driveBrake();
+			// clamp();
+			// liftUP();
+			// wait(500, msec);
+			// liftBreak();
+			// inchDrive(-5);
+			// driveBrake();
+			// turn(45);
+			// driveBrake();
+			// inchDrive(4);
+			// driveBrake();
+			// liftDOWN();
+			// wait(500, msec);
+			// liftBreak();
+			// clamp();
 
 			break;
 		
 		case 1:
 			//code 1: 15sec RIGHT SIDE
 			clamp();
+			drive(-100, -100, 100);
+			driveBrake();
+			drive(100, 100, 100);
+			driveBrake();
 			liftUP();
 			wait(1000, msec);
 			liftBreak();
@@ -364,31 +372,32 @@ void autonomous(void) {
 			liftBreak();
 			clamp();
 			//Optional
-			inchDrive(-4);
-			driveBrake();
-			turn(45);
-			driveBrake();
-			inchDrive(5);
-			driveBrake();
-			clamp();
-			liftUP();
-			wait(500, msec);
-			liftBreak();
-			inchDrive(-5);
-			driveBrake();
-			turn(-45);
-			driveBrake();
-			inchDrive(4);
-			driveBrake();
-			liftDOWN();
-			wait(500, msec);
-			liftBreak();
-			clamp();
+			// inchDrive(-4);
+			// driveBrake();
+			// turn(45);
+			// driveBrake();
+			// inchDrive(5);
+			// driveBrake();
+			// clamp();
+			// liftUP();
+			// wait(500, msec);
+			// liftBreak();
+			// inchDrive(-5);
+			// driveBrake();
+			// turn(-45);
+			// driveBrake();
+			// inchDrive(4);
+			// driveBrake();
+			// liftDOWN();
+			// wait(500, msec);
+			// liftBreak();
+			// clamp();
 			break;
 
 		case 2: 
 			//code 2: Both side auton
 			Brain.Screen.printAt(1, 220, "auton 2 is running");
+
 			liftUP();
 			wait(1000, msec);
 			liftBreak();
