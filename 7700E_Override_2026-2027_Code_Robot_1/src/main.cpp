@@ -24,7 +24,7 @@ motor RightMiddle = motor(PORT7, ratio6_1, false);
 motor RightBack = motor(PORT8, ratio6_1, false); 
 motor DR4BR = motor(PORT20, ratio6_1, false);
 motor DR4BL = motor(PORT1, ratio6_1, true);
-motor clawMotor = motor(PORT15, ratio18_1, false);
+motor clawMotor = motor(PORT14, ratio18_1, false);
 //digital_out claw = digital_out(Brain.ThreeWirePort.A);
 
 inertial gyroturn = inertial(PORT21);
@@ -63,13 +63,13 @@ void drive(int lspeed, int rspeed, int wt){
 }
 
 void liftUP(){
-	DR4BR.spin(forward, 75, pct);
-	DR4BL.spin(forward, 75, pct);
+	DR4BR.spin(forward, -60, pct);
+	DR4BL.spin(forward, -60, pct);
 }
 
 void liftDOWN(){
-	DR4BR.spin(forward, -50, pct);
-	DR4BL.spin(forward, -50, pct);
+	DR4BR.spin(forward, 45, pct);
+	DR4BL.spin(forward, 45, pct);
 }
 
 
@@ -410,14 +410,14 @@ void updateMotorMonitor() {
 void inchDrive(double target){
 	double position = 0;
 	double error = target - position;
-	double kP = 1.5;
+	double kP = 2.5;
 	double speed = kP * error;
 	double accuracy = 2;
 	LeftFront.setPosition(0.0, rev);
 
 	while(fabs(error) >= accuracy){
 		drive(speed, speed, 10);
-		position = LeftFront.position(rev);
+		position = LeftFront.position(rev)*3.14*3.25*0.6;
 		error = target - position;
 		speed = kP * error;
 	}
@@ -472,118 +472,187 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) {																																																																					   
-
-	//switch case
-	switch (selectedAuton) {
-		case 0:
-			//code 0: 15sec LEFT SIDE
-			Brain.Screen.printAt(1, 220, "auton 0 is running");
-			//clamp();
-			drive(-100, -100, 100);
-			driveBrake();
-			drive(100, 100, 100);
-			driveBrake();
-			liftUP();
-			wait(1000, msec);
-			liftBreak();
-			inchDrive(14);
-			driveBrake();
-			turn(-90);
-			driveBrake();
-			inchDrive(4);
-			driveBrake();
-			liftDOWN();
-			wait(1000, msec);
-			liftBreak();
-			//clamp();
-			//Optional
-			// inchDrive(-4);
+void autonomous(void) {		
+			//Left		
+			// clawMotor.setStopping(hold);
+			// clawMotor.spin(fwd, 70, pct);
+			// drive(-100, -100, 100);
 			// driveBrake();
-			// turn(-45);
+			// drive(100, 100, 100);
 			// driveBrake();
-			// inchDrive(5);
-			// driveBrake();
-			// clamp();
 			// liftUP();
-			// wait(500, msec);
+			// wait(1000, msec);
 			// liftBreak();
-			// inchDrive(-5);
+			// inchDrive(14);
 			// driveBrake();
-			// turn(45);
+			// turn(-90);
 			// driveBrake();
 			// inchDrive(4);
 			// driveBrake();
 			// liftDOWN();
-			// wait(500, msec);
+			// wait(1000, msec);
 			// liftBreak();
-			// clamp();
-
-			break;
-		
-		case 1:
-			//code 1: 15sec RIGHT SIDE
-			//clamp();
-			drive(-100, -100, 100);
-			driveBrake();
-			drive(100, 100, 100);
-			driveBrake();
-			liftUP();
-			wait(1000, msec);
-			liftBreak();
-			inchDrive(14);
-			driveBrake();
-			turn(90);
-			driveBrake();
-			inchDrive(4);
-			driveBrake();
-			liftDOWN();
-			wait(1000, msec);
-			liftBreak();
-			//clamp();
-			//Optional
-			// inchDrive(-4);
+			// clawMotor.spin(reverse, 70, pct);	
+			
+			//right
+			// clawMotor.setStopping(hold);
+			// clawMotor.spin(fwd, 70, pct);
+			// drive(-100, -100, 100);																																																																																																																				   
 			// driveBrake();
-			// turn(45);
+			// drive(100, 100, 100);
 			// driveBrake();
-			// inchDrive(5);
-			// driveBrake();
-			// clamp();
 			// liftUP();
-			// wait(500, msec);
+			// wait(1000, msec);
 			// liftBreak();
-			// inchDrive(-5);
+			// inchDrive(14);
 			// driveBrake();
-			// turn(-45);
+			// turn(90);
 			// driveBrake();
 			// inchDrive(4);
 			// driveBrake();
 			// liftDOWN();
-			// wait(500, msec);
+			// wait(1000, msec);
 			// liftBreak();
-			// clamp();
-			break;
+			// clawMotor.spin(reverse, 70, pct);
 
-		case 2: 
-			//code 2: Both side auton
-			Brain.Screen.printAt(1, 220, "auton 2 is running");
+			//both
+		//	clawMotor.setStopping(hold);
+			//clawMotor.spin(fwd, 70, pct);
+			//wait(250, msec);
+			//liftUP();
+			//wait(500, msec);
+			//liftBreak();
+			//inchDrive(4);
+							//clawMotor.stop(brake);
+							///liftUP();
+							//wait(500, msec);
+							//liftBreak();
+			//liftDOWN();
+			//wait(500, msec);
+			//liftBreak();
+		//	clawMotor.setStopping(hold);
+			//clawMotor.spin(reverse, 70, pct);
+			//clawMotor.setPosition(0, deg);
+			
 
-			liftUP();
-			wait(1000, msec);
-			liftBreak();
-			inchDrive(5);
-			liftDOWN();
-			wait(1000, msec);
-			liftBreak();
-			//clamp();
-			break;
+
+
+	// //switch case
+	// switch (selectedAuton) {
+	// 	case 0:
+	// 		//code 0: 15sec LEFT SIDE
+	// 		Brain.Screen.printAt(1, 220, "auton 0 is running");
+	// 		//clamp();
+	// 		clawMotor.setStopping(hold);
+	// 		clawMotor.spin(fwd, 70, pct);
+	// 		drive(-100, -100, 100);
+	// 		driveBrake();
+	// 		drive(100, 100, 100);
+	// 		driveBrake();
+	// 		liftUP();
+	// 		wait(1000, msec);
+	// 		liftBreak();
+	// 		inchDrive(14);
+	// 		driveBrake();
+	// 		turn(-90);
+	// 		driveBrake();
+	// 		inchDrive(4);
+	// 		driveBrake();
+	// 		liftDOWN();
+	// 		wait(1000, msec);
+	// 		liftBreak();
+	// 		clawMotor.spin(reverse, 70, pct);
+	// 		//clamp();
+	// 		//Optional
+	// 		// inchDrive(-4);
+	// 		// driveBrake();
+	// 		// turn(-45);
+	// 		// driveBrake();
+	// 		// inchDrive(5);
+	// 		// driveBrake();
+	// 		// clamp();
+	// 		// liftUP();
+	// 		// wait(500, msec);
+	// 		// liftBreak();
+	// 		// inchDrive(-5);
+	// 		// driveBrake();
+	// 		// turn(45);
+	// 		// driveBrake();
+	// 		// inchDrive(4);
+	// 		// driveBrake();
+	// 		// liftDOWN();
+	// 		// wait(500, msec);
+	// 		// liftBreak();
+	// 		// clamp();
+
+	// 		break;
 		
-		case 3:
-			//code 3: 1 min AUTON SKILLS
-			Brain.Screen.printAt(1, 220, "auton 3 is running");
-			break;
-		}
-		Brain.Screen.printAt(10, 220, "COMPLETE");
+	// 	case 1:
+	// 		//code 1: 15sec RIGHT SIDE
+	// 		//clamp();
+	// 		clawMotor.setStopping(hold);
+	// 		clawMotor.spin(fwd, 70, pct);
+	// 		drive(-100, -100, 100);
+	// 		driveBrake();
+	// 		drive(100, 100, 100);
+	// 		driveBrake();
+	// 		liftUP();
+	// 		wait(1000, msec);
+	// 		liftBreak();
+	// 		inchDrive(14);
+	// 		driveBrake();
+	// 		turn(90);
+	// 		driveBrake();
+	// 		inchDrive(4);
+	// 		driveBrake();
+	// 		liftDOWN();
+	// 		wait(1000, msec);
+	// 		liftBreak();
+	// 		clawMotor.spin(reverse, 70, pct);
+	// 		//clamp();
+	// 		//Optional
+	// 		// inchDrive(-4);
+	// 		// driveBrake();
+	// 		// turn(45);
+	// 		// driveBrake();
+	// 		// inchDrive(5);
+	// 		// driveBrake();
+	// 		// clamp();
+	// 		// liftUP();
+	// 		// wait(500, msec);																																																																																																																																														   
+	// 		// liftBreak();
+	// 		// inchDrive(-5);
+	// 		// driveBrake();
+	// 		// turn(-45);
+	// 		// driveBrake();
+	// 		// inchDrive(4);
+	// 		// driveBrake();
+	// 		// liftDOWN();
+	// 		// wait(500, msec);
+	// 		// liftBreak();
+	// 		// clamp();
+	// 		break;
+
+	// 	case 2: 
+	// 		//code 2: Both side auton
+	// 		Brain.Screen.printAt(1, 220, "auton 2 is running");
+
+	// 		liftUP();
+	// 		wait(1000, msec);
+	// 		liftBreak();
+	// 		inchDrive(5);
+	// 		liftDOWN();
+	// 		wait(1000, msec);
+	// 		liftBreak();
+	// 		//clamp();
+	// 		break;
+		
+	// 	case 3:
+	// 		//code 3: 1 min AUTON SKILLS
+	// 		Brain.Screen.printAt(1, 220, "auton 3 is running");
+	// 		break;
+	// 	}
+	// 	Brain.Screen.printAt(10, 220, "COMPLETE");
 }
 																																																																																																			   
 /*---------------------------------------------------------------------------*/
@@ -614,13 +683,13 @@ void usercontrol(void) {
     // values based on feedback from the joysticks.
 	lspeed = Controller.Axis3.position(pct);
 	rspeed = Controller.Axis2.position(pct);
-	drive(lspeed, rspeed, 10);
+	drive(lspeed, rspeed, 30);
 
 	
 	if (Controller.ButtonR2.pressing()){
-		liftUP();
-	}else if (Controller.ButtonR1.pressing()){
 		liftDOWN();
+	}else if (Controller.ButtonR1.pressing()){
+		liftUP();
 	}else{
 		DR4BR.stop(brake);
 		DR4BL.stop(brake);
@@ -650,5 +719,6 @@ int main() {
   // Prevent main from exiting with an infinite loop.
   while (true) {
     wait(100, msec);
-  }
+  }																																																																																																																																																																														   
 }
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			   
