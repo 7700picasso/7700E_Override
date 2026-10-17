@@ -419,6 +419,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+  Brain.Screen.clearScreen(); 
 	int lspeed = 0;
 	int rspeed = 0;
   while (1) {
