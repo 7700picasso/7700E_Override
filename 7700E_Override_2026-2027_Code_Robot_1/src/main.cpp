@@ -410,14 +410,14 @@ void updateMotorMonitor() {
 void inchDrive(double target){
 	double position = 0;
 	double error = target - position;
-	double kP = 2.5;
+	double kP = 5;
 	double speed = kP * error;
-	double accuracy = 2;
+	double accuracy = 0.5;
 	LeftFront.setPosition(0.0, rev);
 
 	while(fabs(error) >= accuracy){
 		drive(speed, speed, 10);
-		position = LeftFront.position(rev)*3.14*3.25*0.6;
+		position = LeftFront.position(rev)*3.14*3.25*1.8;
 		error = target - position;
 		speed = kP * error;
 	}
@@ -432,7 +432,7 @@ void turn(double target){
 	double error = target - rotation;
 	double kP = 1.5;
 	double speed = kP * error;
-	double accuracy = 2;
+	double accuracy = 0.5;
 	gyroturn.setRotation(0.0, deg);
 
 	while(fabs(error) >= accuracy){
@@ -440,6 +440,42 @@ void turn(double target){
 		rotation = gyroturn.rotation(deg);
 		error = target - rotation;
 		speed = kP * error;
+	}
+	driveBrake();
+	
+}
+
+int sign(float a ){
+	return (a < 0 ? -1 : 1);
+}
+
+void turnPID(double target){
+	double error = target - gyroturn.rotation(deg);
+	double kP = 1.5;
+	double kI = 0.05;
+	double kD = 5;
+	double preverror = error;
+	double totalerror = 0;
+	double accuracy = 0.5;
+	gyroturn.setRotation(0.0, deg);
+
+	while(fabs(error) >= accuracy){
+		error = target - gyroturn.rotation(deg);
+		while (fabs(error) > 180) {
+			error -= 360 * sign(error);
+		}
+		
+		if (fabs(error) < 15) {
+			totalerror +=error;
+		}else if ((error > 0 && preverror < 0) || (error < 0 && preverror > 0)){
+			totalerror = 0;
+		}
+
+		double speed = (kP * error ) * (kD * totalerror ) * kI * (error - preverror);
+		printf("error=%.2f speed=%.2f p=%.2f i=%.2f d=%.2f actual speed=%.2f\n", error, speed, kP*error, kI*totalerror, kD*(error - preverror), gyroturn.gyroRate(zaxis, dps));
+		
+		drive(speed, -speed, 10);
+		
 	}
 	driveBrake();
 	
@@ -537,122 +573,125 @@ void autonomous(void) {
 
 
 
-	// //switch case
-	// switch (selectedAuton) {
-	// 	case 0:
-	// 		//code 0: 15sec LEFT SIDE
-	// 		Brain.Screen.printAt(1, 220, "auton 0 is running");
-	// 		//clamp();
-	// 		clawMotor.setStopping(hold);
-	// 		clawMotor.spin(fwd, 70, pct);
-	// 		drive(-100, -100, 100);
-	// 		driveBrake();
-	// 		drive(100, 100, 100);
-	// 		driveBrake();
-	// 		liftUP();
-	// 		wait(1000, msec);
-	// 		liftBreak();
-	// 		inchDrive(14);
-	// 		driveBrake();
-	// 		turn(-90);
-	// 		driveBrake();
-	// 		inchDrive(4);
-	// 		driveBrake();
-	// 		liftDOWN();
-	// 		wait(1000, msec);
-	// 		liftBreak();
-	// 		clawMotor.spin(reverse, 70, pct);
-	// 		//clamp();
-	// 		//Optional
-	// 		// inchDrive(-4);
-	// 		// driveBrake();
-	// 		// turn(-45);
-	// 		// driveBrake();
-	// 		// inchDrive(5);
-	// 		// driveBrake();
-	// 		// clamp();
-	// 		// liftUP();
-	// 		// wait(500, msec);
-	// 		// liftBreak();
-	// 		// inchDrive(-5);
-	// 		// driveBrake();
-	// 		// turn(45);
-	// 		// driveBrake();
-	// 		// inchDrive(4);
-	// 		// driveBrake();
-	// 		// liftDOWN();
-	// 		// wait(500, msec);
-	// 		// liftBreak();
-	// 		// clamp();
+	//switch case
+	switch (selectedAuton) {
+		case 0:
+			//code 0: 15sec LEFT SIDE
 
-	// 		break;
+			Brain.Screen.printAt(1, 220, "auton 0 is running");
+			// //clamp();
+			// clawMotor.setStopping(hold);
+			// clawMotor.spin(fwd, 70, pct);
+			Brain.Screen.clearScreen();
+			inchDrive(25);
+			turn(90);
+			// driveBrake();
+
+			// drive(100, 100, 100);
+			// driveBrake();
+			// liftUP();
+			// wait(1000, msec);
+			// liftBreak();
+			// inchDrive(14);
+			// driveBrake();
+			// turn(-90);
+			// driveBrake();
+			// inchDrive(4);
+			// driveBrake();
+			// liftDOWN();
+			// wait(1000, msec);
+			// liftBreak();
+			// clawMotor.spin(reverse, 70, pct);
+			// //clamp();
+			// //Optional
+			// // inchDrive(-4);
+			// // driveBrake();
+			// // turn(-45);
+			// // driveBrake();
+			// // inchDrive(5);
+			// // driveBrake();
+			// // clamp();
+			// // liftUP();
+			// // wait(500, msec);
+			// // liftBreak();
+			// // inchDrive(-5);
+			// // driveBrake();
+			// // turn(45);
+			// // driveBrake();
+			// // inchDrive(4);
+			// // driveBrake();
+			// // liftDOWN();
+			// // wait(500, msec);
+			// // liftBreak();
+			// // clamp();
+
+			break;
 		
-	// 	case 1:
-	// 		//code 1: 15sec RIGHT SIDE
-	// 		//clamp();
-	// 		clawMotor.setStopping(hold);
-	// 		clawMotor.spin(fwd, 70, pct);
-	// 		drive(-100, -100, 100);
-	// 		driveBrake();
-	// 		drive(100, 100, 100);
-	// 		driveBrake();
-	// 		liftUP();
-	// 		wait(1000, msec);
-	// 		liftBreak();
-	// 		inchDrive(14);
-	// 		driveBrake();
-	// 		turn(90);
-	// 		driveBrake();
-	// 		inchDrive(4);
-	// 		driveBrake();
-	// 		liftDOWN();
-	// 		wait(1000, msec);
-	// 		liftBreak();
-	// 		clawMotor.spin(reverse, 70, pct);
-	// 		//clamp();
-	// 		//Optional
-	// 		// inchDrive(-4);
-	// 		// driveBrake();
-	// 		// turn(45);
-	// 		// driveBrake();
-	// 		// inchDrive(5);
-	// 		// driveBrake();
-	// 		// clamp();
-	// 		// liftUP();
-	// 		// wait(500, msec);																																																																																																																																														   
-	// 		// liftBreak();
-	// 		// inchDrive(-5);
-	// 		// driveBrake();
-	// 		// turn(-45);
-	// 		// driveBrake();
-	// 		// inchDrive(4);
-	// 		// driveBrake();
-	// 		// liftDOWN();
-	// 		// wait(500, msec);
-	// 		// liftBreak();
-	// 		// clamp();
-	// 		break;
+		case 1:
+			//code 1: 15sec RIGHT SIDE
+			//clamp();
+			clawMotor.setStopping(hold);
+			clawMotor.spin(fwd, 70, pct);
+			drive(-100, -100, 100);
+			driveBrake();
+			drive(100, 100, 100);
+			driveBrake();
+			liftUP();
+			wait(1000, msec);
+			liftBreak();
+			inchDrive(14);
+			driveBrake();
+			turn(90);
+			driveBrake();
+			inchDrive(4);
+			driveBrake();
+			liftDOWN();
+			wait(1000, msec);
+			liftBreak();
+			clawMotor.spin(reverse, 70, pct);
+			//clamp();
+			//Optional
+			// inchDrive(-4);
+			// driveBrake();
+			// turn(45);
+			// driveBrake();
+			// inchDrive(5);
+			// driveBrake();
+			// clamp();
+			// liftUP();
+			// wait(500, msec);																																																																																																																																														   
+			// liftBreak();
+			// inchDrive(-5);
+			// driveBrake();
+			// turn(-45);
+			// driveBrake();
+			// inchDrive(4);
+			// driveBrake();
+			// liftDOWN();
+			// wait(500, msec);
+			// liftBreak();
+			// clamp();
+			break;
 
-	// 	case 2: 
-	// 		//code 2: Both side auton
-	// 		Brain.Screen.printAt(1, 220, "auton 2 is running");
-
-	// 		liftUP();
-	// 		wait(1000, msec);
-	// 		liftBreak();
-	// 		inchDrive(5);
-	// 		liftDOWN();
-	// 		wait(1000, msec);
-	// 		liftBreak();
-	// 		//clamp();
-	// 		break;
+		case 2: 
+			//code 2: SINGLE ROBOT AUTON - Both side
+			Brain.Screen.printAt(1, 220, "auton 2 is running");
+			liftUP();
+			wait(1000, msec);
+			liftBreak();
+			inchDrive(5);
+			liftDOWN();
+			wait(1000, msec);
+			liftBreak();
+			//clamp();
+			break;
 		
-	// 	case 3:
-	// 		//code 3: 1 min AUTON SKILLS
-	// 		Brain.Screen.printAt(1, 220, "auton 3 is running");
-	// 		break;
-	// 	}
-	// 	Brain.Screen.printAt(10, 220, "COMPLETE");
+		case 3:
+			//code 3: 1 min AUTON SKILLS
+			Brain.Screen.printAt(1, 220, "auton 3 is running");
+			break;
+		}
+		Brain.Screen.printAt(10, 220, "COMPLETE");
 }
 																																																																																																			   
 /*---------------------------------------------------------------------------*/
