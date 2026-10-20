@@ -15,16 +15,17 @@ using namespace vex;
 competition Competition;
 brain Brain;
 controller Controller;
+ 
 
-motor LeftFront = motor(PORT6, ratio18_1, true);
+motor LeftFront = motor(PORT2, ratio18_1, true);
 motor LeftMiddle = motor(PORT4, ratio6_1, true);
 motor LeftBack = motor(PORT5, ratio6_1, true);
-motor RightFront = motor(PORT9, ratio18_1, false);
-motor RightMiddle = motor(PORT7, ratio6_1, false);
-motor RightBack = motor(PORT8, ratio6_1, false); 
-motor DR4BR = motor(PORT20, ratio6_1, false);
+motor RightFront = motor(PORT19, ratio18_1, false);
+motor RightMiddle = motor(PORT10, ratio6_1, false);
+motor RightBack = motor(PORT18, ratio6_1, false); 
+motor DR4BR = motor(PORT9, ratio6_1, false);
 motor DR4BL = motor(PORT1, ratio6_1, true);
-motor clawMotor = motor(PORT14, ratio18_1, false);
+motor clawMotor = motor(PORT3, ratio18_1, false);
 //digital_out claw = digital_out(Brain.ThreeWirePort.A);
 
 inertial gyroturn = inertial(PORT21);
@@ -53,12 +54,14 @@ bool isGripping  = false;
 /*---------------------------------------------------------------------------*/
 
 void drive(int lspeed, int rspeed, int wt){
-  LeftMiddle.spin(forward, lspeed, pct);
-  RightMiddle.spin(forward, rspeed, pct);
-  RightFront.spin(forward, rspeed, pct);
-  LeftFront.spin(forward, lspeed, pct);
-  RightBack.spin(forward, rspeed, pct);
-  LeftBack.spin(forward, lspeed, pct);
+  double left = lspeed * 0.12;
+  double right = rspeed * 0.12;
+  LeftMiddle.spin(forward, left, volt);
+  RightMiddle.spin(forward, right, volt);
+  RightFront.spin(forward, right, volt);
+  LeftFront.spin(forward, left, volt);
+  RightBack.spin(forward, right, volt);
+  LeftBack.spin(forward, left, volt);
   wait(wt, msec);
 }
 
@@ -451,33 +454,38 @@ int sign(float a ){
 
 void turnPID(double target){
 	double error = target - gyroturn.rotation(deg);
-	double kP = 1.5;
-	double kI = 0.05;
-	double kD = 5;
+	double kP = 0.7;
+	double kI = 0.01;
+	double kD = 0;//1.5;
 	double preverror = error;
 	double totalerror = 0;
 	double accuracy = 0.5;
 	gyroturn.setRotation(0.0, deg);
 
+	int debugCounter = 0;
 	while(fabs(error) >= accuracy){
 		error = target - gyroturn.rotation(deg);
-		while (fabs(error) > 180) {
-			error -= 360 * sign(error);
-		}
+		// while (fabs(error) > 180) {
+		// 	error -= 360 * sign(error);
+		// }
 		
-		if (fabs(error) < 15) {
+		if (fabs(error) < 20) {
 			totalerror +=error;
 		}else if ((error > 0 && preverror < 0) || (error < 0 && preverror > 0)){
 			totalerror = 0;
 		}
 
-		double speed = (kP * error ) * (kD * totalerror ) * kI * (error - preverror);
-		printf("error=%.2f speed=%.2f p=%.2f i=%.2f d=%.2f actual speed=%.2f\n", error, speed, kP*error, kI*totalerror, kD*(error - preverror), gyroturn.gyroRate(zaxis, dps));
+		double speed = (kP * error ) + (kI * totalerror ) + kD * (error - preverror);
+		if (debugCounter % 10 == 0) {
+			printf("error=%.2f gyro=%.2f speed=%.2f p=%.2f i=%.2f d=%.2f actual speed=%.2f\n", error, gyroturn.rotation(deg), speed, kP*error, kI*totalerror, kD*(error - preverror), gyroturn.gyroRate(zaxis, dps));			
+		}
 		
 		drive(speed, -speed, 10);
 		
 	}
 	driveBrake();
+	error = target - gyroturn.rotation(deg);
+	printf("error=%.2f gyro=%.2f actual speed=%.2f\n", error, gyroturn.rotation(deg), gyroturn.gyroRate(zaxis, dps));			
 	
 }
 
@@ -509,69 +517,6 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {		
-			//Left		
-			// clawMotor.setStopping(hold);
-			// clawMotor.spin(fwd, 70, pct);
-			// drive(-100, -100, 100);
-			// driveBrake();
-			// drive(100, 100, 100);
-			// driveBrake();
-			// liftUP();
-			// wait(1000, msec);
-			// liftBreak();
-			// inchDrive(14);
-			// driveBrake();
-			// turn(-90);
-			// driveBrake();
-			// inchDrive(4);
-			// driveBrake();
-			// liftDOWN();
-			// wait(1000, msec);
-			// liftBreak();
-			// clawMotor.spin(reverse, 70, pct);	
-			
-			//right
-			// clawMotor.setStopping(hold);
-			// clawMotor.spin(fwd, 70, pct);
-			// drive(-100, -100, 100);																																																																																																																				   
-			// driveBrake();
-			// drive(100, 100, 100);
-			// driveBrake();
-			// liftUP();
-			// wait(1000, msec);
-			// liftBreak();
-			// inchDrive(14);
-			// driveBrake();
-			// turn(90);
-			// driveBrake();
-			// inchDrive(4);
-			// driveBrake();
-			// liftDOWN();
-			// wait(1000, msec);
-			// liftBreak();
-			// clawMotor.spin(reverse, 70, pct);
-
-			//both
-		//	clawMotor.setStopping(hold);
-			//clawMotor.spin(fwd, 70, pct);
-			//wait(250, msec);
-			//liftUP();
-			//wait(500, msec);
-			//liftBreak();
-			//inchDrive(4);
-							//clawMotor.stop(brake);
-							///liftUP();
-							//wait(500, msec);
-							//liftBreak();
-			//liftDOWN();
-			//wait(500, msec);
-			//liftBreak();
-		//	clawMotor.setStopping(hold);
-			//clawMotor.spin(reverse, 70, pct);
-			//clawMotor.setPosition(0, deg);
-			
-
-
 
 	//switch case
 	switch (selectedAuton) {
@@ -583,9 +528,8 @@ void autonomous(void) {
 			// clawMotor.setStopping(hold);
 			// clawMotor.spin(fwd, 70, pct);
 			Brain.Screen.clearScreen();
-			inchDrive(25);
-			turn(90);
-			// driveBrake();
+			turnPID(90);
+			driveBrake();
 
 			// drive(100, 100, 100);
 			// driveBrake();
