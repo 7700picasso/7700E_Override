@@ -25,7 +25,7 @@ motor RightMiddle = motor(PORT10, ratio6_1, false);
 motor RightBack = motor(PORT18, ratio6_1, false); 
 motor DR4BR = motor(PORT9, ratio6_1, false);
 motor DR4BL = motor(PORT1, ratio6_1, true);
-motor clawMotor = motor(PORT3, ratio18_1, false);
+digital_out clawP = digital_out(Brain.ThreeWirePort.A);
 //digital_out claw = digital_out(Brain.ThreeWirePort.A);
 
 inertial gyroturn = inertial(PORT21);
@@ -34,7 +34,7 @@ inertial gyroturn = inertial(PORT21);
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
-int selectedAuton = 0;
+int selectedAuton = 1;
 int AutonMin = 0;
 int AutonMax = 3;
 const double SETUP_DEGREES = 65.0; // Initial pull-in from resting position
@@ -85,9 +85,9 @@ void driveBrake(){
   RightBack.stop(brake);
 }
 
-// void clamp(){
-// 	claw.set(!claw.value());
-// }
+void clamp(){
+	clawP.set(!clawP.value());
+}
 
 void liftBreak(){
 	DR4BR.stop(brake);
@@ -98,38 +98,38 @@ void liftBreak(){
 
 
 
-void setupClaw() {
-    // Only allow setup once per match/session
-    if (!isSetupDone) {
-        clawMotor.setVelocity(40, percent);
-        // Pull in from pre-match wide position
-        clawMotor.spinFor(forward, SETUP_DEGREES, degrees, true);
+// void setupClaw() {
+//     // Only allow setup once per match/session
+//     if (!isSetupDone) {
+//         clawMotor.setVelocity(40, percent);
+//         // Pull in from pre-match wide position
+//         clawMotor.spinFor(forward, SETUP_DEGREES, degrees, true);
         
-        // Zero out the encoder so all future target angles are relative to this point
-        clawMotor.resetPosition();
-        clawMotor.setStopping(hold);
+//         // Zero out the encoder so all future target angles are relative to this point
+//         clawMotor.resetPosition();
+//         clawMotor.setStopping(hold);
         
-        isSetupDone = true;
-        isGripping = false;
-    }
-}
+//         isSetupDone = true;
+//         isGripping = false;
+//     }
+// }
 
-void toggleClaw() {
-    // Prevent toggling before the ready position has been established
-    if (!isSetupDone) return;
+// void toggleClaw() {
+//     // Prevent toggling before the ready position has been established
+//     if (!isSetupDone) return;
 
-    clawMotor.setVelocity(70, percent);
+//     clawMotor.setVelocity(70, percent);
 
-    if (isGripping) {
-        // Open to the ready width
-        clawMotor.spinToPosition(OPEN_DEGREES, degrees, false);
-        isGripping = false;
-    } else {
-        // Clamp down to target grip width
-        clawMotor.spinToPosition(GRIP_DEGREES, degrees, false);
-        isGripping = true;
-    }
-}
+//     if (isGripping) {
+//         // Open to the ready width
+//         clawMotor.spinToPosition(OPEN_DEGREES, degrees, false);
+//         isGripping = false;
+//     } else {
+//         // Clamp down to target grip width
+//         clawMotor.spinToPosition(GRIP_DEGREES, degrees, false);
+//         isGripping = true;
+//     }
+// }
 
 
 
@@ -243,7 +243,7 @@ void updateMotorMonitor() {
   drawMotorBox("Right B", RightBack, col2X, 121, boxW, boxH);
 
   // Row 4
-  drawMotorBox("Claw",  clawMotor, col1X, 179, boxW, boxH);
+//   drawMotorBox("Claw",  clawMotor, col1X, 179, boxW, boxH);
   //drawMotorBox("Arm",     Arm,    col2X, 179, boxW, boxH);
 }
 
@@ -345,68 +345,69 @@ void updateMotorMonitor() {
 // 	}
 // }
 
-// void selectAuton() {
-// 		bool selectingAuton = true;
+void selectAuton() {
+		bool selectingAuton = true;
 		
-// 		int x = Brain.Screen.xPosition(); // get the x position of last touch of the screen
-// 		int y = Brain.Screen.yPosition(); // get the y position of last touch of the screen
+		int x = Brain.Screen.xPosition(); // get the x position of last touch of the screen
+		int y = Brain.Screen.yPosition(); // get the y position of last touch of the screen
 		
-// 		// check to see if buttons were pressed
-// 		if (x >= 20 && x <= 120 && y >= 50 && y <= 150){ // select button pressed
-// 				AutonSelected++;
-// 				if (AutonSelected > AutonMax){
-// 						AutonSelected = AutonMin; // rollover
-// 				}
-// 				if(AutonSelected == 0){
-// 					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   Left Side", AutonSelected);
-// 				}
-// 				if(AutonSelected == 1){
-// 					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   Right Side", AutonSelected);
-// 				}
-// 				if(AutonSelected == 2){
-// 					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   1 min auton", AutonSelected);
-// 				}																																													   
+		// check to see if buttons were pressed
+		if (x >= 20 && x <= 120 && y >= 50 && y <= 150){ // select button pressed
+				selectedAuton++;
+				if (selectedAuton > AutonMax){
+						selectedAuton = AutonMin; // rollover
+				}
+				if(selectedAuton == 0){
+					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   Left Side", selectedAuton);
+				}
+				if(selectedAuton == 1){
+					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   Right Side", selectedAuton);
+				}
+				if(selectedAuton == 2){
+					Brain.Screen.printAt(1, 200, "Auton Selected =  %d   1 min auton", selectedAuton);
+				}																																													   
 				
-// 		}
+		}
 		
 		
-// 		if (x >= 170 && x <= 270 && y >= 50 && y <= 150) {
-// 				selectingAuton = false; // GO button pressed
-// 				Brain.Screen.printAt(1, 200, "Auton  =  %d   GO           ", AutonSelected);
-// 		}
+		if (x >= 170 && x <= 270 && y >= 50 && y <= 150) {
+				selectingAuton = false; // GO button pressed
+				Brain.Screen.printAt(1, 200, "Auton  =  %d   GO           ", selectedAuton);
+		}
 		
-// 		if (!selectingAuton) {
-// 				Brain.Screen.setFillColor(green);
-// 				Brain.Screen.drawCircle(300, 75, 75);
-// 				Brain.Screen.printAt(300, 75, "Ready");
-// 		} else {
-// 				Brain.Screen.setFillColor(red);
-// 				Brain.Screen.drawCircle(300, 75, 25);
-// 		}
+		if (!selectingAuton) {
+				Brain.Screen.setFillColor(green);
+				Brain.Screen.drawCircle(300, 75, 75);
+				Brain.Screen.printAt(300, 75, "Ready");
+		} else {
+				Brain.Screen.setFillColor(red);
+				Brain.Screen.drawCircle(300, 75, 25);
+		}
 		
-// 		wait(10, msec); // slow it down
-// 		Brain.Screen.setFillColor(black);
+		wait(10, msec); // slow it down
+		Brain.Screen.setFillColor(black);
 		
-// }
+}
 
-// void drawGUI() {
-// 	// Draws 2 buttons to be used for selecting auto
-// 	Brain.Screen.clearScreen();
-// 	Brain.Screen.printAt(1, 40, "Select Auton then Press Go");
-// 	Brain.Screen.printAt(1, 200, "Auton Selected =  %d   ", AutonSelected);
+void drawGUI() {
+	// Draws 2 buttons to be used for selecting auto
+	Brain.Screen.clearScreen();
+	Brain.Screen.printAt(1, 40, "Select Auton then Press Go");
+	Brain.Screen.printAt(1, 200, "Auton Selected =  %d   ", selectedAuton
+	);
 
-// 	//Draw SELECT button
-// 	Brain.Screen.setFillColor(red);
-// 	Brain.Screen.drawRectangle(20, 50, 100, 100);
-// 	Brain.Screen.drawCircle(300, 75, 25);
-// 	Brain.Screen.printAt(25, 75, "Select");
+	//Draw SELECT button
+	Brain.Screen.setFillColor(red);
+	Brain.Screen.drawRectangle(20, 50, 100, 100);
+	Brain.Screen.drawCircle(300, 75, 25);
+	Brain.Screen.printAt(25, 75, "Select");
 
-// 	//Draw GO button
-// 	Brain.Screen.setFillColor(green);
-// 	Brain.Screen.drawRectangle(170, 50, 100, 100);
-// 	Brain.Screen.printAt(175, 75, "GO");
-// 	Brain.Screen.setFillColor(black);
-// }
+	//Draw GO button
+	Brain.Screen.setFillColor(green);
+	Brain.Screen.drawRectangle(170, 50, 100, 100);
+	Brain.Screen.printAt(175, 75, "GO");
+	Brain.Screen.setFillColor(black);
+}
 
 
 //inch drive
@@ -495,15 +496,15 @@ void turnPID(double target){
 // ============================================================================
 void pre_auton(void) {
   Brain.Screen.clearScreen();
-  drawAutonButtons();
-  updateMotorMonitor();
+  selectAuton();
+  drawGUI();
 
   // Run selection and health monitor until the match starts
-  while (!Competition.isEnabled()) {
-    checkAutonTouch();
-    updateMotorMonitor();
-    wait(50, msec);
-  }
+//   while (!Competition.isEnabled()) {
+//     checkAutonTouch();
+//     updateMotorMonitor();
+//     wait(50, msec);
+//   }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -528,8 +529,28 @@ void autonomous(void) {
 			// clawMotor.setStopping(hold);
 			// clawMotor.spin(fwd, 70, pct);
 			Brain.Screen.clearScreen();
-			turnPID(90);
+			clamp();
+			drive(-100, -100, 100);
 			driveBrake();
+			drive(100, 100, 100);
+			driveBrake();
+			drive(-100, -100, 100);
+			driveBrake();
+			drive(100, 100, 100);
+			driveBrake();
+			liftUP();
+			wait(1000, msec);
+			liftBreak();
+			inchDrive(14);
+			driveBrake();
+			turn(90);
+			driveBrake();
+			inchDrive(4);
+			driveBrake();
+			liftDOWN();
+			wait(1000, msec);
+			liftBreak();
+			clamp();
 
 			// drive(100, 100, 100);
 			// driveBrake();
@@ -573,27 +594,31 @@ void autonomous(void) {
 		
 		case 1:
 			//code 1: 15sec RIGHT SIDE
-			//clamp();
-			clawMotor.setStopping(hold);
-			clawMotor.spin(fwd, 70, pct);
-			drive(-100, -100, 100);
+			// clawMotor.setStopping(hold);
+			// clawMotor.spin(fwd, 70, pct);
+			drive(-100, -100, 250);
 			driveBrake();
-			drive(100, 100, 100);
+			drive(100, 100, 250);
+			driveBrake();
+			wait(1000, msec);
+			drive(-100, -100, 500);
+			driveBrake();
+			drive(100, 100, 250);
 			driveBrake();
 			liftUP();
-			wait(1000, msec);
+			wait(500, msec);
 			liftBreak();
 			inchDrive(14);
 			driveBrake();
-			turn(90);
+			turn(77);
 			driveBrake();
-			inchDrive(4);
+			inchDrive(15);
 			driveBrake();
 			liftDOWN();
-			wait(1000, msec);
+			wait(500, msec);
 			liftBreak();
-			clawMotor.spin(reverse, 70, pct);
-			//clamp();
+			// clawMotor.spin(reverse, 70, pct);
+			clamp();
 			//Optional
 			// inchDrive(-4);
 			// driveBrake();
@@ -653,11 +678,11 @@ void usercontrol(void) {
  // Brain.Screen.clearScreen(); 
 	int lspeed = 0;
 	int rspeed = 0;
-	clawMotor.setStopping(hold);
+	// clawMotor.setStopping(hold);
 
     // Register single-press button callbacks
-    Controller.ButtonA.pressed(setupClaw);
-    Controller.ButtonL1.pressed(toggleClaw);
+    Controller.ButtonA.pressed(clamp);
+    // Controller.ButtonL1.pressed(toggleClaw);
 
   while (1) {
 	  updateMotorMonitor();
