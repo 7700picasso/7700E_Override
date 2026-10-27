@@ -17,16 +17,15 @@ brain Brain;
 controller Controller;
  
 
-motor LeftFront = motor(PORT2, ratio18_1, true);
-motor LeftMiddle = motor(PORT4, ratio6_1, true);
-motor LeftBack = motor(PORT5, ratio6_1, true);
-motor RightFront = motor(PORT19, ratio18_1, false);
-motor RightMiddle = motor(PORT10, ratio6_1, false);
-motor RightBack = motor(PORT18, ratio6_1, false); 
-motor DR4BR = motor(PORT9, ratio6_1, false);
-motor DR4BL = motor(PORT1, ratio6_1, true);
+motor LeftFront = motor(PORT19, ratio18_1, true);
+motor LeftMiddle = motor(PORT7, ratio6_1, true);
+motor LeftBack = motor(PORT9, ratio6_1, true);
+motor RightFront = motor(PORT18, ratio18_1, false);
+motor RightMiddle = motor(PORT11, ratio6_1, false);
+motor RightBack = motor(PORT13, ratio6_1, false); 
+motor DR4BR = motor(PORT20, ratio6_1, false);
+motor DR4BL = motor(PORT2, ratio6_1, true);
 digital_out clawP = digital_out(Brain.ThreeWirePort.A);
-//digital_out claw = digital_out(Brain.ThreeWirePort.A);
 
 inertial gyroturn = inertial(PORT21);
 // define your global instances of motors and other devices here
@@ -529,73 +528,8 @@ void autonomous(void) {
 			// clawMotor.setStopping(hold);
 			// clawMotor.spin(fwd, 70, pct);
 			Brain.Screen.clearScreen();
-			clamp();
-			drive(-100, -100, 100);
-			driveBrake();
-			drive(100, 100, 100);
-			driveBrake();
-			drive(-100, -100, 100);
-			driveBrake();
-			drive(100, 100, 100);
-			driveBrake();
-			liftUP();
-			wait(1000, msec);
-			liftBreak();
-			inchDrive(14);
-			driveBrake();
-			turn(90);
-			driveBrake();
-			inchDrive(4);
-			driveBrake();
-			liftDOWN();
-			wait(1000, msec);
-			liftBreak();
-			clamp();
 
-			// drive(100, 100, 100);
-			// driveBrake();
-			// liftUP();
-			// wait(1000, msec);
-			// liftBreak();
-			// inchDrive(14);
-			// driveBrake();
-			// turn(-90);
-			// driveBrake();
-			// inchDrive(4);
-			// driveBrake();
-			// liftDOWN();
-			// wait(1000, msec);
-			// liftBreak();
-			// clawMotor.spin(reverse, 70, pct);
-			// //clamp();
-			// //Optional
-			// // inchDrive(-4);
-			// // driveBrake();
-			// // turn(-45);
-			// // driveBrake();
-			// // inchDrive(5);
-			// // driveBrake();
-			// // clamp();
-			// // liftUP();
-			// // wait(500, msec);
-			// // liftBreak();
-			// // inchDrive(-5);
-			// // driveBrake();
-			// // turn(45);
-			// // driveBrake();
-			// // inchDrive(4);
-			// // driveBrake();
-			// // liftDOWN();
-			// // wait(500, msec);
-			// // liftBreak();
-			// // clamp();
-
-			break;
-		
-		case 1:
-			//code 1: 15sec RIGHT SIDE
-			// clawMotor.setStopping(hold);
-			// clawMotor.spin(fwd, 70, pct);
+			//toggle
 			drive(-100, -100, 250);
 			driveBrake();
 			drive(100, 100, 250);
@@ -605,6 +539,63 @@ void autonomous(void) {
 			driveBrake();
 			drive(100, 100, 250);
 			driveBrake();
+			//drive to alliance goal
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			inchDrive(14);
+			driveBrake();
+			turnPID(-90);
+			driveBrake();
+			inchDrive(15);
+			driveBrake();
+			//place down pre-load(yellow facing up)
+			liftDOWN();
+			wait(500, msec);
+			liftBreak();
+			clamp();
+			//TESTING
+			//drive to yellow pin and cup
+			wait(250, msec);
+			inchDrive(-15);
+			driveBrake();
+			turnPID(-45);
+			driveBrake();
+			inchDrive(34);
+			//grab
+			driveBrake();
+			clamp();
+			liftUP();
+			wait(500, msec);
+			driveBrake();
+			//drive to neutral goal
+			inchDrive(-34);
+			driveBrake();
+			turnPID(-135);
+			driveBrake();
+			inchDrive(15);
+			driveBrake();
+			//place down cup+pin
+			liftDOWN();
+			wait(500, msec);
+			liftBreak();
+			clamp();
+			break;
+		
+		case 1:
+			//code 1: 15sec RIGHT SIDE
+
+			//toggle
+			drive(-100, -100, 250);
+			driveBrake();
+			drive(100, 100, 250);
+			driveBrake();
+			wait(1000, msec);
+			drive(-100, -100, 500);
+			driveBrake();
+			drive(100, 100, 250);
+			driveBrake();
+			//drive to alliance goal
 			liftUP();
 			wait(500, msec);
 			liftBreak();
@@ -614,44 +605,49 @@ void autonomous(void) {
 			driveBrake();
 			inchDrive(15);
 			driveBrake();
+			//place down pre-load(yellow facing up)
 			liftDOWN();
 			wait(500, msec);
 			liftBreak();
-			// clawMotor.spin(reverse, 70, pct);
 			clamp();
-			//Optional
-			// inchDrive(-4);
-			// driveBrake();
-			// turn(45);
-			// driveBrake();
-			// inchDrive(5);
-			// driveBrake();
-			// clamp();
-			// liftUP();
-			// wait(500, msec);																																																																																																																																														   
-			// liftBreak();
-			// inchDrive(-5);
-			// driveBrake();
-			// turn(-45);
-			// driveBrake();
-			// inchDrive(4);
-			// driveBrake();
-			// liftDOWN();
-			// wait(500, msec);
-			// liftBreak();
-			// clamp();
+			//TESTING
+			//drive to yellow pin and cup
+			wait(250, msec);
+			inchDrive(-15);
+			driveBrake();
+			turnPID(45);
+			driveBrake();
+			inchDrive(34);
+			//grab
+			driveBrake();
+			clamp();
+			liftUP();
+			wait(500, msec);
+			driveBrake();
+			//drive to neutral goal
+			inchDrive(-34);
+			driveBrake();
+			turnPID(135);
+			driveBrake();
+			inchDrive(15);
+			driveBrake();
+			//place down cup+pin
+			liftDOWN();
+			wait(500, msec);
+			liftBreak();
+			clamp();
 			break;
 
 		case 2: 
 			//code 2: SINGLE ROBOT AUTON - Both side
 			Brain.Screen.printAt(1, 220, "auton 2 is running");
-			liftUP();
-			wait(1000, msec);
-			liftBreak();
-			inchDrive(5);
-			liftDOWN();
-			wait(1000, msec);
-			liftBreak();
+			// liftUP();
+			// wait(1000, msec);
+			// liftBreak();
+			// inchDrive(5);
+			// liftDOWN();
+			// wait(1000, msec);
+			// liftBreak();
 			//clamp();
 			break;
 		
