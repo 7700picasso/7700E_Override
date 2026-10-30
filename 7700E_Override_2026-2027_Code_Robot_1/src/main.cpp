@@ -33,7 +33,7 @@ inertial gyroturn = inertial(PORT21);
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
-int selectedAuton = 1;
+int selectedAuton = 0;
 int AutonMin = 0;
 int AutonMax = 3;
 const double SETUP_DEGREES = 65.0; // Initial pull-in from resting position
@@ -63,17 +63,27 @@ void drive(int lspeed, int rspeed, int wt){
   LeftBack.spin(forward, left, volt);
   wait(wt, msec);
 }
+void liftBreak(){
+	DR4BR.stop(brake);
+	DR4BL.stop(brake);
+}
 
 void liftUP(){
 	DR4BR.spin(forward, -60, pct);
 	DR4BL.spin(forward, -60, pct);
 }
 
-void liftDOWN(){
-	DR4BR.spin(forward, 45, pct);
-	DR4BL.spin(forward, 45, pct);
+void liftDOWN(int speed, int wt){
+	DR4BR.spin(forward, speed, pct);
+	DR4BL.spin(forward, speed, pct);
+	wait(wt, msec);
 }
 
+void liftDOWN(int speed){
+	DR4BR.spin(forward, speed, pct);
+	DR4BL.spin(forward, speed, pct);
+
+}
 
 void driveBrake(){
   LeftMiddle.stop(brake);
@@ -88,10 +98,6 @@ void clamp(){
 	clawP.set(!clawP.value());
 }
 
-void liftBreak(){
-	DR4BR.stop(brake);
-	DR4BL.stop(brake);
-}
 
 
 
@@ -454,8 +460,8 @@ int sign(float a ){
 
 void turnPID(double target){
 	double error = target - gyroturn.rotation(deg);
-	double kP = 0.7;
-	double kI = 0.01;
+	double kP = 0.8;
+	double kI = 0.03;
 	double kD = 0;//1.5;
 	double preverror = error;
 	double totalerror = 0;
@@ -476,7 +482,7 @@ void turnPID(double target){
 		}
 
 		double speed = (kP * error ) + (kI * totalerror ) + kD * (error - preverror);
-		if (debugCounter % 10 == 0) {
+		if (debugCounter % 10 == -1) {
 			printf("error=%.2f gyro=%.2f speed=%.2f p=%.2f i=%.2f d=%.2f actual speed=%.2f\n", error, gyroturn.rotation(deg), speed, kP*error, kI*totalerror, kD*(error - preverror), gyroturn.gyroRate(zaxis, dps));			
 		}
 		
@@ -534,8 +540,13 @@ void autonomous(void) {
 			driveBrake();
 			drive(100, 100, 250);
 			driveBrake();
+			wait(500, msec);
+			drive(-100, -100, 250);
+			driveBrake();
+			drive(100, 100, 250);
+			driveBrake();
 			wait(1000, msec);
-			drive(-100, -100, 500);
+			drive(-100, -100, 250);
 			driveBrake();
 			drive(100, 100, 250);
 			driveBrake();
@@ -543,42 +554,39 @@ void autonomous(void) {
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			inchDrive(14);
+			inchDrive(9);
 			driveBrake();
 			turnPID(-90);
 			driveBrake();
 			inchDrive(15);
 			driveBrake();
 			//place down pre-load(yellow facing up)
-			liftDOWN();
-			wait(500, msec);
-			liftBreak();
+			liftDOWN(45, 500);
 			clamp();
 			//TESTING
 			//drive to yellow pin and cup
 			wait(250, msec);
 			inchDrive(-15);
 			driveBrake();
-			turnPID(-45);
+			turnPID(45);
 			driveBrake();
-			inchDrive(34);
+			inchDrive(22);
 			//grab
 			driveBrake();
 			clamp();
 			liftUP();
 			wait(500, msec);
+			liftBreak();
 			driveBrake();
 			//drive to neutral goal
-			inchDrive(-34);
+			inchDrive(-22);
 			driveBrake();
-			turnPID(-135);
+			turnPID(125);
 			driveBrake();
-			inchDrive(15);
+			inchDrive(17);
 			driveBrake();
 			//place down cup+pin
-			liftDOWN();
-			wait(500, msec);
-			liftBreak();
+			liftDOWN(45, 500);
 			clamp();
 			break;
 		
@@ -606,9 +614,7 @@ void autonomous(void) {
 			inchDrive(15);
 			driveBrake();
 			//place down pre-load(yellow facing up)
-			liftDOWN();
-			wait(500, msec);
-			liftBreak();
+			liftDOWN(45, 500);
 			clamp();
 			//TESTING
 			//drive to yellow pin and cup
@@ -627,12 +633,12 @@ void autonomous(void) {
 			//drive to neutral goal
 			inchDrive(-34);
 			driveBrake();
-			turnPID(135);
+			turnPID(-135);
 			driveBrake();
 			inchDrive(15);
 			driveBrake();
 			//place down cup+pin
-			liftDOWN();
+			liftDOWN(45, 500);
 			wait(500, msec);
 			liftBreak();
 			clamp();
@@ -691,7 +697,7 @@ void usercontrol(void) {
 
 	
 	if (Controller.ButtonR2.pressing()){
-		liftDOWN();
+		liftDOWN(45);
 	}else if (Controller.ButtonR1.pressing()){
 		liftUP();
 	}else{
