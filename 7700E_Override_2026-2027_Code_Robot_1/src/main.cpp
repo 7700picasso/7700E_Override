@@ -461,7 +461,7 @@ int sign(float a ){
 void turnPID(double target){
 	double error = target - gyroturn.rotation(deg);
 	double kP = 0.8;
-	double kI = 0.03;
+	double kI = 0.04;
 	double kD = 0;//1.5;
 	double preverror = error;
 	double totalerror = 0;
@@ -541,28 +541,33 @@ void autonomous(void) {
 			drive(100, 100, 250);
 			driveBrake();
 			wait(500, msec);
-			drive(-100, -100, 250);
+			drive(-100, -100, 500);
 			driveBrake();
 			drive(100, 100, 250);
 			driveBrake();
 			wait(1000, msec);
-			drive(-100, -100, 250);
+			drive(-100, -100, 500);
 			driveBrake();
 			drive(100, 100, 250);
 			driveBrake();
+			
 			//drive to alliance goal
 			liftUP();
 			wait(500, msec);
 			liftBreak();
 			inchDrive(9);
-			driveBrake();
-			turnPID(-90);
-			driveBrake();
-			inchDrive(15);
-			driveBrake();
+			// driveBrake();
+			turnPID(-86);
+			// driveBrake();
+			inchDrive(10);
+			// driveBrake();
+			
 			//place down pre-load(yellow facing up)
 			liftDOWN(45, 500);
+			liftBreak();
 			clamp();
+			
+			
 			//TESTING
 			//drive to yellow pin and cup
 			wait(250, msec);
@@ -570,7 +575,7 @@ void autonomous(void) {
 			driveBrake();
 			turnPID(45);
 			driveBrake();
-			inchDrive(22);
+			inchDrive(23);
 			//grab
 			driveBrake();
 			clamp();
@@ -579,7 +584,7 @@ void autonomous(void) {
 			liftBreak();
 			driveBrake();
 			//drive to neutral goal
-			inchDrive(-22);
+			inchDrive(-23);
 			driveBrake();
 			turnPID(125);
 			driveBrake();
@@ -587,6 +592,7 @@ void autonomous(void) {
 			driveBrake();
 			//place down cup+pin
 			liftDOWN(45, 500);
+			liftBreak();
 			clamp();
 			break;
 		
