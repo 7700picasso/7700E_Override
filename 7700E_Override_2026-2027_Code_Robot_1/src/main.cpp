@@ -555,12 +555,13 @@ void autonomous(void) {
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			inchDrive(9);
-			// driveBrake();
+			inchDrive(12);
+			driveBrake();
+			wait(100, msec);
 			turnPID(-86);
-			// driveBrake();
-			inchDrive(10);
-			// driveBrake();
+			driveBrake();
+			inchDrive(15);
+			driveBrake();
 			
 			//place down pre-load(yellow facing up)
 			liftDOWN(45, 500);
@@ -573,7 +574,7 @@ void autonomous(void) {
 			wait(250, msec);
 			inchDrive(-15);
 			driveBrake();
-			turnPID(45);
+			turnPID(41);
 			driveBrake();
 			inchDrive(23);
 			//grab
@@ -726,7 +727,7 @@ void usercontrol(void) {
 // Main will set up the competition functions and callbacks.
 //
 int main() {
-  // Set up callbacks for autonomous and driver control periods.
+  // Set up callbacks for autonomous and dricver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
   // Run the pre-autonomous function.
@@ -736,5 +737,5 @@ int main() {
   while (true) {
     wait(100, msec);
   }																																																																																																																																																																														   
-}
+}																																																																																																																																																																																																																																																									   
 																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			   
