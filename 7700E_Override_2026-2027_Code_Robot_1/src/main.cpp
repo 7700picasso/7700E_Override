@@ -33,7 +33,7 @@ inertial gyroturn = inertial(PORT21);
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
-int selectedAuton = 0;
+int selectedAuton = 3;
 int AutonMin = 0;
 int AutonMax = 3;
 const double SETUP_DEGREES = 65.0; // Initial pull-in from resting position
@@ -69,8 +69,8 @@ void liftBreak(){
 }
 
 void liftUP(){
-	DR4BR.spin(forward, -60, pct);
-	DR4BL.spin(forward, -60, pct);
+	DR4BR.spin(forward, -80, pct);
+	DR4BL.spin(forward, -80, pct);
 }
 
 void liftDOWN(int speed, int wt){
@@ -421,7 +421,7 @@ void inchDrive(double target){
 	double error = target - position;
 	double kP = 5;
 	double speed = kP * error;
-	double accuracy = 0.5;
+	double accuracy = 1;
 	LeftFront.setPosition(0.0, rev);
 
 	while(fabs(error) >= accuracy){
@@ -459,10 +459,11 @@ int sign(float a ){
 }
 
 void turnPID(double target){
+	float x = gyroturn.rotation(deg);
 	double error = target - gyroturn.rotation(deg);
-	double kP = 0.8;
-	double kI = 0.04;
-	double kD = 0;//1.5;
+	double kP = 3;
+	double kI = 0.0;
+	double kD = 0.5;//1.5;
 	double preverror = error;
 	double totalerror = 0;
 	double accuracy = 0.5;
@@ -470,7 +471,8 @@ void turnPID(double target){
 
 	int debugCounter = 0;
 	while(fabs(error) >= accuracy){
-		error = target - gyroturn.rotation(deg);
+		x = gyroturn.rotation(deg);
+		error = target - x ;
 		// while (fabs(error) > 180) {
 		// 	error -= 360 * sign(error);
 		// }
@@ -536,65 +538,65 @@ void autonomous(void) {
 			Brain.Screen.clearScreen();
 
 			//toggle
-			drive(-100, -100, 250);
-			driveBrake();
-			drive(100, 100, 250);
+			wait(500, msec);
+			drive(100, 100, 100);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
-			drive(100, 100, 250);
+			wait(500, msec);
+			drive(100, 100, 100);
 			driveBrake();
-			wait(1000, msec);
+			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
-			drive(100, 100, 250);
-			driveBrake();
-			
+			wait(100, msec);
 			//drive to alliance goal
+			inchDrive(19);
+			driveBrake();
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			inchDrive(12);
-			driveBrake();
 			wait(100, msec);
-			turnPID(-86);
+			turnPID(-83);
 			driveBrake();
-			inchDrive(15);
+			inchDrive(14.5);
+			printf("finished\n");
 			driveBrake();
 			
-			//place down pre-load(yellow facing up)
-			liftDOWN(45, 500);
+			// //place down pre-load(yellow facing up)
+			liftDOWN(45, 700);
 			liftBreak();
 			clamp();
+			inchDrive(-2);
 			
 			
 			//TESTING
-			//drive to yellow pin and cup
-			wait(250, msec);
-			inchDrive(-15);
-			driveBrake();
-			turnPID(41);
-			driveBrake();
-			inchDrive(23);
+			// drive to yellow pin and cup
+			// wait(250, msec);
+			// inchDrive(-15);
+			// driveBrake();
+			// turnPID(41);
+			// driveBrake();
+			// inchDrive(23);
 			//grab
-			driveBrake();
-			clamp();
-			liftUP();
-			wait(500, msec);
-			liftBreak();
-			driveBrake();
+			// driveBrake();
+			// clamp();
+			// liftUP();
+			// wait(500, msec);
+			// liftBreak();
+			// driveBrake();
 			//drive to neutral goal
-			inchDrive(-23);
-			driveBrake();
-			turnPID(125);
-			driveBrake();
-			inchDrive(17);
-			driveBrake();
-			//place down cup+pin
-			liftDOWN(45, 500);
-			liftBreak();
-			clamp();
+			// inchDrive(-23);
+			// driveBrake();
+			// turnPID(125);
+			// driveBrake();
+			// inchDrive(17);
+			// driveBrake();
+			// place down cup+pin
+			// liftDOWN(45, 500);
+			// liftBreak();
+			// clamp();
 			break;
 		
 		case 1:
@@ -667,6 +669,9 @@ void autonomous(void) {
 		case 3:
 			//code 3: 1 min AUTON SKILLS
 			Brain.Screen.printAt(1, 220, "auton 3 is running");
+			turnPID(-90);
+			wait(1000, msec);
+			turnPID(90);
 			break;
 		}
 		Brain.Screen.printAt(10, 220, "COMPLETE");
@@ -704,7 +709,7 @@ void usercontrol(void) {
 
 	
 	if (Controller.ButtonR2.pressing()){
-		liftDOWN(45);
+		liftDOWN(80);
 	}else if (Controller.ButtonR1.pressing()){
 		liftUP();
 	}else{
@@ -727,6 +732,7 @@ void usercontrol(void) {
 // Main will set up the competition functions and callbacks.
 //
 int main() {
+	printf("test\n");
   // Set up callbacks for autonomous and dricver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
