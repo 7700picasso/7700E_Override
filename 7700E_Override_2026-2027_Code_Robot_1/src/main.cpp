@@ -461,9 +461,9 @@ int sign(float a ){
 void turnPID(double target){
 	float x = gyroturn.rotation(deg);
 	double error = target - gyroturn.rotation(deg);
-	double kP = 3;
-	double kI = 0.0;
-	double kD = 0.5;//1.5;
+	double kP =4;
+	double kI = 0.00;
+	double kD = 1.5;//1.5;
 	double preverror = error;
 	double totalerror = 0;
 	double accuracy = 0.5;
@@ -558,7 +558,7 @@ void autonomous(void) {
 			wait(500, msec);
 			liftBreak();
 			wait(100, msec);
-			turnPID(-83);
+			turnPID(-90);
 			driveBrake();
 			inchDrive(14.5);
 			printf("finished\n");
@@ -669,9 +669,13 @@ void autonomous(void) {
 		case 3:
 			//code 3: 1 min AUTON SKILLS
 			Brain.Screen.printAt(1, 220, "auton 3 is running");
-			turnPID(-90);
-			wait(1000, msec);
+			
 			turnPID(90);
+			wait(2000, msec);
+			turnPID(-90);
+			
+			Brain.Screen.printAt(10, 220, "COMPLETE");
+
 			break;
 		}
 		Brain.Screen.printAt(10, 220, "COMPLETE");
