@@ -33,7 +33,7 @@ inertial gyroturn = inertial(PORT21);
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
-int selectedAuton = 3;
+int selectedAuton = 0;
 int AutonMin = 0;
 int AutonMax = 3;
 const double SETUP_DEGREES = 65.0; // Initial pull-in from resting position
@@ -461,9 +461,9 @@ int sign(float a ){
 void turnPID(double target){
 	float x = gyroturn.rotation(deg);
 	double error = target - gyroturn.rotation(deg);
-	double kP =4;
-	double kI = 0.00;
-	double kD = 1.5;//1.5;
+	double kP = 2.0;
+	double kI = 0.0;
+	double kD = 0.2;
 	double preverror = error;
 	double totalerror = 0;
 	double accuracy = 0.5;
@@ -471,6 +471,7 @@ void turnPID(double target){
 
 	int debugCounter = 0;
 	while(fabs(error) >= accuracy){
+		preverror = error;
 		x = gyroturn.rotation(deg);
 		error = target - x ;
 		// while (fabs(error) > 180) {
@@ -603,27 +604,34 @@ void autonomous(void) {
 			//code 1: 15sec RIGHT SIDE
 
 			//toggle
-			drive(-100, -100, 250);
+			wait(500, msec);
+			drive(100, 100, 100);
 			driveBrake();
-			drive(100, 100, 250);
+			wait(500, msec);
+			drive(-100, -100, 200);
 			driveBrake();
-			wait(1000, msec);
-			drive(-100, -100, 500);
+			wait(500, msec);
+			drive(100, 100, 100);
 			driveBrake();
-			drive(100, 100, 250);
+			wait(500, msec);
+			drive(-100, -100, 200);
 			driveBrake();
+			wait(100, msec);
 			//drive to alliance goal
+			inchDrive(2);
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			inchDrive(14);
+			inchDrive(17);
 			driveBrake();
-			turn(77);
+			turnPID(90);
 			driveBrake();
 			inchDrive(15);
 			driveBrake();
 			//place down pre-load(yellow facing up)
 			liftDOWN(45, 500);
+			wait(500, msec);
+			liftBreak();
 			clamp();
 			//TESTING
 			//drive to yellow pin and cup
