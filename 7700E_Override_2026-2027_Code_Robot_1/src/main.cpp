@@ -158,11 +158,11 @@ void drawAutonButtons() {
     }
 
     Brain.Screen.drawRectangle(5, y, 225, 42);
-    Brain.Screen.setPenColor(color::white);
+    Brain.Screen.setPenColor(color::black);
     Brain.Screen.printAt(20, y + 28, autonNames[i]);
   }
 }
-
+ 
 void checkAutonTouch() {
   if (Brain.Screen.pressing()) {
     int touchX = Brain.Screen.xPosition();
@@ -502,12 +502,14 @@ void turnPID(double target){
 // STEP 4: COMPETITION THREADS
 // ============================================================================
 void pre_auton(void) {
-  Brain.Screen.clearScreen();
-  selectAuton();
-  drawGUI();
+	Brain.Screen.clearScreen();
+	selectAuton();
+	drawGUI();
+	drawAutonButtons();
+	updateMotorMonitor();
 
-  // Run selection and health monitor until the match starts
-//   while (!Competition.isEnabled()) {
+//   //Run selection and health monitor until the match starts
+//   while (!Competition.isAutonomous() && !Competition.isDriverControl() ) {
 //     checkAutonTouch();
 //     updateMotorMonitor();
 //     wait(50, msec);
