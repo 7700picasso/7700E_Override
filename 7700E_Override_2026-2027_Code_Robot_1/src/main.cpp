@@ -33,9 +33,10 @@ inertial gyroturn = inertial(PORT21);
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
-int selectedAuton = 0;
+int selectedAuton = 3;
 int AutonMin = 0;
 int AutonMax = 3;
+int count = 0;
 const double SETUP_DEGREES = 65.0; // Initial pull-in from resting position
 const double GRIP_DEGREES  = 100.0; // Degrees inward from ready position to clamp
 const double OPEN_DEGREES  = 0.0;   // Ready/open position
@@ -463,7 +464,7 @@ void turnPID(double target){
 	double error = target - gyroturn.rotation(deg);
 	double kP = 2.0;
 	double kI = 0.0;
-	double kD = 0.2;
+	double kD = 0.9;
 	double preverror = error;
 	double totalerror = 0;
 	double accuracy = 0.5;
@@ -503,18 +504,18 @@ void turnPID(double target){
 // STEP 4: COMPETITION THREADS
 // ============================================================================
 void pre_auton(void) {
-	Brain.Screen.clearScreen();
-	selectAuton();
-	drawGUI();
+	// Brain.Screen.clearScreen();
+	// selectAuton();
+	// drawGUI();
 	drawAutonButtons();
 	updateMotorMonitor();
 
-//   //Run selection and health monitor until the match starts
-//   while (!Competition.isAutonomous() && !Competition.isDriverControl() ) {
-//     checkAutonTouch();
-//     updateMotorMonitor();
-//     wait(50, msec);
-//   }
+  //Run selection and health monitor until the match starts
+  while (!Competition.isAutonomous() && !Competition.isDriverControl() ) {
+    checkAutonTouch();
+    updateMotorMonitor();
+    wait(50, msec);
+  }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -677,17 +678,93 @@ void autonomous(void) {
 			break;
 		
 		case 3:
-			//code 3: 1 min AUTON SKILLS
-			Brain.Screen.printAt(1, 220, "auton 3 is running");
-			
 			turnPID(90);
-			wait(2000, msec);
-			turnPID(-90);
+
 			
 			Brain.Screen.printAt(10, 220, "COMPLETE");
 
 			break;
-		}
+		
+		case 4: 
+
+
+
+
+		break; 
+		case 5: 
+			//code 3: 1 min AUTON SKILLS
+			Brain.Screen.printAt(1, 220, "auton 3 is running");
+			//toggle
+			//wait(500, msec);
+			drive(75, 75, 200);
+			driveBrake();
+			wait(500, msec);
+			drive(-100, -100, 500);
+			driveBrake();
+			wait(500, msec);
+			drive(75, 75, 150);
+			driveBrake();
+			wait(500, msec);
+			drive(-100, -100, 500);
+			driveBrake();
+			wait(100, msec);
+			//drive to alliance goal
+			inchDrive(19);
+			driveBrake();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			wait(100, msec);
+			turnPID(90);
+			driveBrake();
+			inchDrive(18);
+			printf("finished\n");
+			driveBrake();
+			
+			// // //place down pre-load(yellow facing up)
+			// liftDOWN(45, 700);
+			// liftBreak();
+			// clamp();
+			// inchDrive(-2);
+
+			//test
+			// inchDrive(-5);
+			// turnPID(45);
+			// inchDrive(10);
+			// clamp();
+			// liftUP();
+			// wait(250, msec);
+			// liftBreak();
+			// inchDrive(-10);
+			// turnPID(-45);
+			// inchDrive(5);
+			// liftDOWN(45, 250);
+			// clamp();
+			// inchDrive(-10);
+			// turnPID(90);
+			// inchDrive(5);
+			// turnPID(-90);
+			// inchDrive(34);
+			// turnPID(-90);
+			// inchDrive(5);
+			// turnPID(90);
+			// while (count < 4){
+			// 	clamp();
+			// 	count++;
+			// }
+
+			
+			Brain.Screen.printAt(10, 220, "COMPLETE");
+
+			break;
+
+
+
+
+
+
+		
+	}
 		Brain.Screen.printAt(10, 220, "COMPLETE");
 }
 																																																																																																			   
