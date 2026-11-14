@@ -33,7 +33,7 @@ inertial gyroturn = inertial(PORT21);
 double pi = 3.14;
 double d = 3.25;
 double g = 0.6;
-int selectedAuton = 3;
+int selectedAuton = 5;
 int AutonMin = 0;
 int AutonMax = 3;
 int count = 0;
@@ -696,36 +696,36 @@ void autonomous(void) {
 			Brain.Screen.printAt(1, 220, "auton 3 is running");
 			//toggle
 			//wait(500, msec);
-			drive(75, 75, 200);
+			drive(75, 75, 100);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
 			wait(500, msec);
-			drive(75, 75, 150);
+			drive(75, 75, 100);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
 			wait(100, msec);
 			//drive to alliance goal
-			inchDrive(19);
+			inchDrive(15);
 			driveBrake();
 			liftUP();
 			wait(500, msec);
 			liftBreak();
 			wait(100, msec);
-			turnPID(90);
+			turnPID(92);
 			driveBrake();
-			inchDrive(18);
+			inchDrive(16);
 			printf("finished\n");
 			driveBrake();
 			
 			// // //place down pre-load(yellow facing up)
-			// liftDOWN(45, 700);
-			// liftBreak();
-			// clamp();
-			// inchDrive(-2);
+			liftDOWN(45, 700);
+			liftBreak();
+			clamp();
+			inchDrive(-5);
 
 			//test
 			// inchDrive(-5);
