@@ -56,10 +56,12 @@ bool isGripping  = false;
 void drive(int lspeed, int rspeed, int wt){
   double left = lspeed * 0.12;
   double right = rspeed * 0.12;
+  double smallright = right * 7.5 / 12;
+  double smallleft = left * 7.5 / 12;
   LeftMiddle.spin(forward, left, volt);
   RightMiddle.spin(forward, right, volt);
-  RightFront.spin(forward, right, volt);
-  LeftFront.spin(forward, left, volt);
+  RightFront.spin(forward, smallright, volt);
+  LeftFront.spin(forward, smallleft, volt);
   RightBack.spin(forward, right, volt);
   LeftBack.spin(forward, left, volt);
   wait(wt, msec);
@@ -417,15 +419,17 @@ void drawGUI() {
 
 
 //inch drive
-void inchDrive(double target){
+void inchDrive(double target, double timeout = 1550){
 	double position = 0;
 	double error = target - position;
 	double kP = 5;
 	double speed = kP * error;
 	double accuracy = 1;
 	LeftFront.setPosition(0.0, rev);
+	timer turnTime; 
+	turnTime.reset();
 
-	while(fabs(error) >= accuracy){
+	while(fabs(error) >= accuracy && turnTime.time() < timeout){
 		drive(speed, speed, 10);
 		position = LeftFront.position(rev)*3.14*3.25*1.8;
 		error = target - position;
@@ -459,19 +463,21 @@ int sign(float a ){
 	return (a < 0 ? -1 : 1);
 }
 
-void turnPID(double target){
+void turnPID(double target, double timeout = 1000){
 	float x = gyroturn.rotation(deg);
 	double error = target - gyroturn.rotation(deg);
-	double kP = 2.0;
+	double kP = 0.9;
 	double kI = 0.0;
-	double kD = 0.9;
+	double kD = 0.5;
 	double preverror = error;
 	double totalerror = 0;
 	double accuracy = 0.5;
 	gyroturn.setRotation(0.0, deg);
+	timer turnTime; 
+	turnTime.reset(); 
 
 	int debugCounter = 0;
-	while(fabs(error) >= accuracy){
+	while(fabs(error) >= accuracy && turnTime < timeout){
 		preverror = error;
 		x = gyroturn.rotation(deg);
 		error = target - x ;
@@ -556,7 +562,7 @@ void autonomous(void) {
 			driveBrake();
 			wait(100, msec);
 			//drive to alliance goal
-			inchDrive(19);
+			inchDrive(25);
 			driveBrake();
 			liftUP();
 			wait(500, msec);
@@ -564,7 +570,7 @@ void autonomous(void) {
 			wait(100, msec);
 			turnPID(-90);
 			driveBrake();
-			inchDrive(14.5);
+			inchDrive(6);
 			printf("finished\n");
 			driveBrake();
 			
@@ -687,7 +693,9 @@ void autonomous(void) {
 		
 		case 4: 
 
-
+			turnPID(90); 
+			wait(500, msec); 
+			turnPID(-90);
 
 
 		break; 
@@ -696,28 +704,28 @@ void autonomous(void) {
 			Brain.Screen.printAt(1, 220, "auton 3 is running");
 			//toggle
 			//wait(500, msec);
-			drive(75, 75, 100);
+			drive(100, 100, 100);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
 			wait(500, msec);
-			drive(75, 75, 100);
+			drive(100, 100, 100);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
 			wait(100, msec);
 			//drive to alliance goal
-			inchDrive(15);
-			driveBrake();
+			inchDrive(20);
+			//driveBrake();
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			wait(100, msec);
-			turnPID(92);
-			driveBrake();
-			inchDrive(16);
+			//wait(100, msec);
+			turnPID(88);
+			//driveBrake();
+			inchDrive(19.5);
 			printf("finished\n");
 			driveBrake();
 			
@@ -725,33 +733,22 @@ void autonomous(void) {
 			liftDOWN(45, 700);
 			liftBreak();
 			clamp();
-			inchDrive(-5);
+			inchDrive(-17);
 
 			//test
-			// inchDrive(-5);
-			// turnPID(45);
-			// inchDrive(10);
-			// clamp();
-			// liftUP();
-			// wait(250, msec);
-			// liftBreak();
-			// inchDrive(-10);
-			// turnPID(-45);
-			// inchDrive(5);
-			// liftDOWN(45, 250);
-			// clamp();
-			// inchDrive(-10);
-			// turnPID(90);
-			// inchDrive(5);
-			// turnPID(-90);
-			// inchDrive(34);
-			// turnPID(-90);
-			// inchDrive(5);
-			// turnPID(90);
-			// while (count < 4){
-			// 	clamp();
-			// 	count++;
-			// }
+			turnPID(-50);
+			inchDrive(24.7);
+			clamp();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			inchDrive(-24.7);
+			turnPID(50);
+			inchDrive(17);
+			liftDOWN(70, 400);
+			clamp();
+
+
 
 			
 			Brain.Screen.printAt(10, 220, "COMPLETE");
