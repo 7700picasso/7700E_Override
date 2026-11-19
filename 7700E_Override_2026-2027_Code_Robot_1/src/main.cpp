@@ -35,7 +35,7 @@ double d = 3.25;
 double g = 0.6;
 int selectedAuton = 5;
 int AutonMin = 0;
-int AutonMax = 3;
+int AutonMax = 5;
 int count = 0;
 const double SETUP_DEGREES = 65.0; // Initial pull-in from resting position
 const double GRIP_DEGREES  = 100.0; // Degrees inward from ready position to clamp
@@ -434,6 +434,11 @@ void inchDrive(double target, double timeout = 1550){
 		position = LeftFront.position(rev)*3.14*3.25*1.8;
 		error = target - position;
 		speed = kP * error;
+		if (speed > 60){
+			speed = 60;
+		} else if(speed < -60 ){
+			speed = -60;
+		}
 	}
 	driveBrake();
 }
@@ -548,7 +553,7 @@ void autonomous(void) {
 			Brain.Screen.clearScreen();
 
 			//toggle
-			wait(500, msec);
+			//wait(500, msec);
 			drive(100, 100, 100);
 			driveBrake();
 			wait(500, msec);
@@ -562,51 +567,37 @@ void autonomous(void) {
 			driveBrake();
 			wait(100, msec);
 			//drive to alliance goal
-			inchDrive(25);
-			driveBrake();
+			inchDrive(20);
+			//driveBrake();
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			wait(100, msec);
-			turnPID(-90);
-			driveBrake();
-			inchDrive(6);
+			//wait(100, msec);
+			turnPID(-88);
+			//driveBrake();
+			inchDrive(19.5);
 			printf("finished\n");
 			driveBrake();
 			
-			// //place down pre-load(yellow facing up)
+			// // //place down pre-load(yellow facing up)
 			liftDOWN(45, 700);
 			liftBreak();
 			clamp();
-			inchDrive(-2);
-			
-			
-			//TESTING
-			// drive to yellow pin and cup
-			// wait(250, msec);
-			// inchDrive(-15);
-			// driveBrake();
-			// turnPID(41);
-			// driveBrake();
-			// inchDrive(23);
-			//grab
-			// driveBrake();
-			// clamp();
-			// liftUP();
-			// wait(500, msec);
-			// liftBreak();
-			// driveBrake();
-			//drive to neutral goal
-			// inchDrive(-23);
-			// driveBrake();
-			// turnPID(125);
-			// driveBrake();
-			// inchDrive(17);
-			// driveBrake();
-			// place down cup+pin
-			// liftDOWN(45, 500);
-			// liftBreak();
-			// clamp();
+			inchDrive(-17);
+
+			//test
+			turnPID(50);
+			inchDrive(24.7);
+			clamp();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			inchDrive(-24.7);
+			turnPID(-50);
+			inchDrive(17);
+			liftDOWN(70, 400);
+			clamp();
+
 			break;
 		
 		case 1:
@@ -684,27 +675,8 @@ void autonomous(void) {
 			break;
 		
 		case 3:
-			turnPID(90);
-
-			
-			Brain.Screen.printAt(10, 220, "COMPLETE");
-
-			break;
-		
-		case 4: 
-
-			turnPID(90); 
-			wait(500, msec); 
-			turnPID(-90);
-
-
-		break; 
-		case 5: 
-			//code 3: 1 min AUTON SKILLS
-			Brain.Screen.printAt(1, 220, "auton 3 is running");
-			//toggle
 			//wait(500, msec);
-			drive(100, 100, 100);
+			drive(75, 75, 150);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
@@ -733,19 +705,84 @@ void autonomous(void) {
 			liftDOWN(45, 700);
 			liftBreak();
 			clamp();
-			inchDrive(-17);
+			inchDrive(-20);
 
 			//test
 			turnPID(-50);
-			inchDrive(24.7);
+			inchDrive(27);
 			clamp();
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			inchDrive(-24.7);
+			inchDrive(-27);
 			turnPID(50);
-			inchDrive(17);
+			inchDrive(20);
 			liftDOWN(70, 400);
+			clamp();
+
+			
+			Brain.Screen.printAt(10, 220, "COMPLETE");
+
+			break;
+		
+		case 4: 
+
+			turnPID(90); 
+			wait(500, msec); 
+			turnPID(-90);
+
+
+		break; 
+		case 5: 
+			//code 3: 1 min AUTON SKILLS
+			Brain.Screen.printAt(1, 220, "auton 3 is running");
+			//toggle
+			//wait(500, msec);
+			drive(100, 100, 150);
+			driveBrake();
+			wait(500, msec);
+			drive(-100, -100, 500);
+			driveBrake();
+			wait(500, msec);
+			drive(100, 100, 100);
+			driveBrake();
+			wait(500, msec);
+			drive(-100, -100, 500);
+			driveBrake();
+			wait(100, msec);
+			//drive to alliance goal
+			inchDrive(19);
+			//driveBrake();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			//wait(100, msec);
+			turnPID(88);
+			//driveBrake();
+			inchDrive(20);
+			wait(100, msec);
+			inchDrive(-4);
+			printf("finished\n");
+			driveBrake();
+			
+			// // //place down pre-load(yellow facing up)
+			liftDOWN(45, 700);
+			liftBreak();
+			clamp();
+			wait(250, msec);
+			inchDrive(-18);
+
+			//test
+			turnPID(-50);
+			inchDrive(27);
+			clamp();
+			liftUP();
+			wait(500, msec);
+			liftBreak();
+			turnPID(105);
+			inchDrive(15);
+			liftDOWN(70, 700);
+			liftBreak();
 			clamp();
 
 
