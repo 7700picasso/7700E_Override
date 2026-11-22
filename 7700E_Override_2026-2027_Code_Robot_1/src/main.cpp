@@ -554,7 +554,7 @@ void autonomous(void) {
 
 			//toggle
 			//wait(500, msec);
-			drive(100, 100, 100);
+			drive(100, 100, 150);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
@@ -567,7 +567,7 @@ void autonomous(void) {
 			driveBrake();
 			wait(100, msec);
 			//drive to alliance goal
-			inchDrive(20);
+			inchDrive(19.5);
 			//driveBrake();
 			liftUP();
 			wait(500, msec);
@@ -575,7 +575,7 @@ void autonomous(void) {
 			//wait(100, msec);
 			turnPID(-88);
 			//driveBrake();
-			inchDrive(19.5);
+			inchDrive(18.5);
 			printf("finished\n");
 			driveBrake();
 			
@@ -583,19 +583,20 @@ void autonomous(void) {
 			liftDOWN(45, 700);
 			liftBreak();
 			clamp();
-			inchDrive(-17);
+			inchDrive(-18);
 
 			//test
-			turnPID(50);
-			inchDrive(24.7);
+			turnPID(53);
+			inchDrive(23.5);
 			clamp();
 			liftUP();
 			wait(500, msec);
 			liftBreak();
-			inchDrive(-24.7);
-			turnPID(-50);
-			inchDrive(17);
+			inchDrive(-23.5);
+			turnPID(-53);
+			inchDrive(18);
 			liftDOWN(70, 400);
+			wait(100, msec);
 			clamp();
 
 			break;
@@ -783,6 +784,20 @@ void autonomous(void) {
 			inchDrive(15);
 			liftDOWN(70, 700);
 			liftBreak();
+			clamp();
+			inchDrive(-23);
+			turnPID(-38);
+			inchDrive(37);
+			wait(500, msec);
+			clamp();
+			wait(250, msec);
+			turnPID(125);
+			liftUP();
+			wait(800, msec);
+			liftBreak();
+			inchDrive(15);
+			liftDOWN(70, 200);
+			wait(100, msec);
 			clamp();
 
 
