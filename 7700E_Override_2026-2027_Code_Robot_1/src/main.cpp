@@ -554,7 +554,7 @@ void autonomous(void) {
 
 			//toggle
 			//wait(500, msec);
-			drive(100, 100, 150);
+			drive(100, 100, 100);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
@@ -590,13 +590,14 @@ void autonomous(void) {
 			inchDrive(23.5);
 			clamp();
 			liftUP();
-			wait(500, msec);
+			wait(700, msec);
 			liftBreak();
 			inchDrive(-23.5);
 			turnPID(-53);
 			inchDrive(18);
 			liftDOWN(70, 400);
 			wait(100, msec);
+			liftBreak();
 			clamp();
 
 			break;
@@ -739,17 +740,17 @@ void autonomous(void) {
 			Brain.Screen.printAt(1, 220, "auton 3 is running");
 			//toggle
 			//wait(500, msec);
-			drive(100, 100, 150);
+			drive(100, 100, 200);
 			driveBrake();
 			wait(500, msec);
 			drive(-100, -100, 500);
 			driveBrake();
-			wait(500, msec);
-			drive(100, 100, 100);
-			driveBrake();
-			wait(500, msec);
-			drive(-100, -100, 500);
-			driveBrake();
+			// wait(500, msec);
+			// drive(100, 100, 100);
+			// driveBrake();
+			// wait(500, msec);
+			// drive(-100, -100, 500);
+			// driveBrake();
 			wait(100, msec);
 			//drive to alliance goal
 			inchDrive(17);
@@ -769,35 +770,55 @@ void autonomous(void) {
 			liftBreak();
 			clamp();
 			wait(250, msec);
-			inchDrive(-16);
+			inchDrive(-14);
 
 			//test
-			turnPID(-60);
-			inchDrive(25);
+			turnPID(-50);
+			inchDrive(24);
 			clamp();
 			liftUP();
-			wait(500, msec);
+			wait(600, msec);
 			liftBreak();
-			turnPID(105);
+			turnPID(110);
 			inchDrive(15);
 			liftDOWN(70, 700);
 			liftBreak();
 			clamp();
-			inchDrive(-23);
-			turnPID(-38);
-			inchDrive(37);
+			inchDrive(-25);
+			turnPID(-37);
+			inchDrive(38);
 			wait(500, msec);
 			clamp();
+			wait(100, msec);
+			inchDrive(5);
 			wait(250, msec);
 			turnPID(125);
 			liftUP();
 			wait(800, msec);
 			liftBreak();
-			inchDrive(15);
+			inchDrive(20);
 			liftDOWN(70, 200);
 			wait(400, msec);
 			liftBreak();
 			clamp();
+			wait(100, msec);
+			drive(-50, -50, 1500);
+			inchDrive(7);
+			turnPID(-90);
+			inchDrive(20);
+			clamp();
+			wait(100, msec);
+			inchDrive(-18);
+			turnPID(90);
+			liftUP();
+			wait(1000, msec);
+			liftBreak();
+			inchDrive(33);
+			liftDOWN(70, 200);
+			wait(200, msec);
+			liftBreak();
+			clamp();
+
 
 
 
